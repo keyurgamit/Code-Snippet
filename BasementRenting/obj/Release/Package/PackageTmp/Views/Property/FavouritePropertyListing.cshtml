@@ -1,0 +1,62 @@
+﻿@model List<EntityModel.DomainModel.Property>
+
+@*@{
+    ViewBag.Title = "PropertyListing";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}*@
+
+<div class="favourite-property-listing-page myaccount_pg">
+    <div class="breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-item active">
+                <span>My Account</span>
+            </div>
+        </div>
+    </div>
+
+    <section class="secton_middle_containt">
+        <div class="container">
+            <div class="row">
+                <div class="myaccount_sidebar">
+                    @Html.Partial("_MyProfileMenu")
+                </div>
+                <div class="myaccount_containt">
+                    @using (Html.BeginForm("", "", FormMethod.Post, new { id = "FavouriteProperyListingPage" }))
+                    {
+                        <div class="card">
+                            <div class="card-header">My Favourite Property </div>
+                            <div class="card-body">
+                                    @if (Model.Count > 0)
+                                    {
+                                        <div class="favourite-property-listing  listing_box_wraper">
+                                            @Html.Partial("_PropertyBoxFavourite", Model)
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-sm-12">
+                                            <div class="alert alert-info">
+                                                <span> No Favourite Rentals Found </span>
+                                            </div>
+                                        </div>
+                                    }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>  
+    </div>
+<script>
+    $(function () {
+        $('.top-footer').addClass('border');
+        $('.li_myfavoriteproperty').addClass('current');
+
+        if ($('.myaccount_sidebar ul').length) {
+            $('.myaccount_sidebar').addClass('col-lg-3');
+            $('.myaccount_containt').addClass('col-lg-9');
+        }
+        else { $('.myaccount_containt').addClass('col-lg-12'); }
+    });
+</script>

@@ -1,0 +1,213 @@
+﻿@model EntityModel.DomainModel.SearchProperty
+
+@{
+    ViewBag.Title = "MyAccount";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src='https://www.google.com/recaptcha/api.js'></script>
+
+<div class="myaccount_pg savedsearch_pg">
+    <div class="breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-item active">Saved Search</div>
+        </div>
+    </div>
+
+    <section class="secton_middle_containt">
+        <div class="container">
+            <div class="row">
+                <div class="myaccount_sidebar">
+                    @Html.Partial("_MyProfileMenu")
+                </div>
+                <div class="myaccount_containt savedsearch_containt">
+                    <div class="card">
+                        <div class="card-header">Saved Search</div>
+                        <div class="card-body">
+                            <div class="formdiv">
+                                @if (Model.UserId != 0)
+                                {
+                                    <ul class="ul_labelorvalue">
+                                        <li class="lilabel">
+                                            @Html.LabelFor(m => m.Keyword) <colon>:</colon>
+                                        </li>
+                                        <li class="livalue">@Html.Label(Model.Keyword)</li>
+
+                                        @if (ViewBag.ProvinceName != null)
+                                        {
+                                            <li class="lilabel">@Html.LabelFor(m => m.ProvinceId) <colon>:</colon></li>
+                                            <li class="livalue">@ViewBag.ProvinceName</li>
+                                        }
+
+                                        @if (ViewBag.CityName != null)
+                                        {
+                                            <li class="lilabel">@Html.LabelFor(m => m.CityId) <colon>:</colon></li>
+                                            <li class="livalue">@ViewBag.CityName</li>
+                                        }
+
+                                        @if (Model.FromPrice != 0)
+                                        {
+                                            <li class="lilabel"> @Html.Label("Price Range")<colon>:</colon></li>
+                                            <li class="livalue">
+                                                @Html.Label(Convert.ToString(Model.FromPrice)) <span> To </span>
+
+                                                @if (Model.ToPrice != 0)
+                                                {
+                                                    @Html.Label(Convert.ToString(Model.ToPrice))
+                                                }
+                                                else
+                                                {
+                                                    @Html.Label("All")
+                                                }
+                                            </li>
+                                        }
+
+                                        @if (!string.IsNullOrEmpty(Model.AvailableFromDate))
+                                        {
+                                            <li class="lilabel">
+                                                @Html.LabelFor(m => m.AvailableFromDate)
+                                                <colon>:</colon>
+                                            </li>
+                                            <li class="livalue"> @Html.Label(Model.AvailableFromDate)</li>
+                                        }
+
+                                        @if (Model.NoOfBedRooms != 0)
+                                        {
+                                            <li class="lilabel">
+                                                @Html.LabelFor(m => m.NoOfBedRooms)
+                                                <colon>:</colon>
+                                            </li>
+                                            <li class="livalue"> @Html.Label(Convert.ToString(Model.NoOfBedRooms))</li>
+
+                                        }
+
+                                        @if (Model.NoOfBathRooms != 0)
+                                        {
+                                            <li class="lilabel">
+                                                @Html.LabelFor(m => m.NoOfBathRooms)
+                                                <colon>:</colon>
+                                            </li>
+                                            <li class="livalue">
+                                                @Html.Label(Convert.ToString(Model.NoOfBathRooms))
+                                            </li>
+                                        }
+
+                                        @if (Model.DistanceFromSchool != 0)
+                                        {
+                                            <li class="lilabel">
+                                                @Html.LabelFor(m => m.DistanceFromSchool)
+                                                <colon>:</colon>
+                                            </li>
+                                            <li class="livalue"> @Html.Label(Convert.ToString(Model.DistanceFromSchool))</li>
+                                        }
+
+                                    </ul>
+                                    <div class="building-amenities">
+                                        @{
+                                            List<string> lstBuildingAmenities = new List<string>();
+
+                                            if (Model.SeparateEntrance == true)
+                                            {
+                                                lstBuildingAmenities.Add("Separate Entrance");
+                                            }
+                                            if (Model.Internet == true)
+                                            {
+                                                lstBuildingAmenities.Add("Internet");
+                                            }
+                                            if (Model.Furnished == true)
+                                            {
+                                                lstBuildingAmenities.Add("Furnished");
+                                            }
+                                            if (Model.PetFriendly == true)
+                                            {
+                                                lstBuildingAmenities.Add("Pet Friendly");
+                                            }
+                                            if (Model.ParkingAvailable == true)
+                                            {
+                                                lstBuildingAmenities.Add("Parking Available");
+                                            }
+                                            if (Model.SeparateLaundry == true)
+                                            {
+                                                lstBuildingAmenities.Add("Separate Laundry");
+                                            }
+                                            if (Model.TV == true)
+                                            {
+                                                lstBuildingAmenities.Add("TV");
+                                            }
+                                            if (Model.SmokeFriendly == true)
+                                            {
+                                                lstBuildingAmenities.Add("Smoke Friendly");
+                                            }
+                                            if (Model.WalkOut == true)
+                                            {
+                                                lstBuildingAmenities.Add("WalkOut");
+                                            }
+                                            if (Model.VegetarianOnly == true)
+                                            {
+                                                lstBuildingAmenities.Add("Vegetarian Only");
+                                            }
+                                        }
+
+                                        <ul class="ul_labelorvalue">
+                                            <li class="lilabel">
+                                                @Html.Label("Building Amenities")
+                                                <colon>:</colon>
+                                            </li>
+                                            <li class="livalue">
+                                                @Html.Label(string.Join(", ", lstBuildingAmenities.ToList()))
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    using (Html.BeginForm("get-searched-properties", "property", FormMethod.Post, new { id = "SearchFormData" }))
+                                    {
+                                        @Html.HiddenFor(m => m.Keyword)
+                                        @Html.HiddenFor(m => m.ProvinceId)
+                                        @Html.HiddenFor(m => m.CityId)
+                                        @Html.HiddenFor(m => m.FromPrice)
+                                        @Html.HiddenFor(m => m.ToPrice)
+                                        @Html.HiddenFor(m => m.AvailableFromDate)
+                                        @Html.HiddenFor(m => m.NoOfBedRooms)
+                                        @Html.HiddenFor(m => m.NoOfBathRooms)
+                                        @Html.HiddenFor(m => m.DistanceFromSchool)
+                                        @Html.HiddenFor(m => m.SeparateEntrance)
+                                        @Html.HiddenFor(m => m.Internet)
+                                        @Html.HiddenFor(m => m.Furnished)
+                                        @Html.HiddenFor(m => m.PetFriendly)
+                                        @Html.HiddenFor(m => m.ParkingAvailable)
+                                        @Html.HiddenFor(m => m.SeparateLaundry)
+                                        @Html.HiddenFor(m => m.TV)
+                                        @Html.HiddenFor(m => m.SmokeFriendly)
+                                        @Html.HiddenFor(m => m.WalkOut)
+                                        @Html.HiddenFor(m => m.VegetarianOnly)
+
+                                        <div class="btn-prn">
+                                            <button type="submit" id="btnSearchProperty" class="btn btn-twoblue"><i class="iicon basement-renting-search"></i> Search </button>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="alert alert-danger" style="text-align:center;margin-top:4rem">No Saved Search!</div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    $(function () {
+        $('.top-footer').addClass('border');
+        $('.li_savesearch').addClass('current');
+
+        if ($('.myaccount_sidebar ul').length) {
+            $('.myaccount_sidebar').addClass('col-lg-3');
+            $('.myaccount_containt').addClass('col-lg-9');
+        }
+        else { $('.myaccount_containt').addClass('col-lg-12'); }
+    });
+</script>

@@ -1,0 +1,22 @@
+﻿@if (Session["userrole"] != null && Session["userrole"].ToString() == "Admin")
+{
+    <ul class="uladminlogin">
+        <li class="li_myprifile"><a href="@Url.Action("profile", "customer")"><i class="iicon basement-renting-user"></i> My Profile</a></li>
+        <li class="li_managehomepagecontent"><a href="@Url.Action("homepage-cms", "admin")"><i class="fa fa-file-code-o"></i> Homepage Content</a></li>
+        <li class="li_managetermsconditons"><a href="@Url.Action("terms-conditions", "admin")"><i class="fa fa-file-text-o" aria-hidden="true"></i> Terms & Conditions</a></li>
+        <li class="li_manageusers"><a href="@Url.Action("manage-users", "admin", new { userroleid = 2, pageindex = 1 })"><i class="zmdi zmdi-account-o" aria-hidden="true"></i>User Management</a></li>
+        <li class="li_manageproperties"><a href="@Url.Action("manage-properties", "admin")"><i class="zmdi zmdi-home" aria-hidden="true"></i> Property Management</a></li>
+    </ul>
+}
+else if (Session["userrole"] != null && Session["userrole"].ToString() == "Landlord")
+{
+    //No menus
+}
+else //customer
+{
+    <ul class="ulcustomer">
+        <li class="li_myprifile"><a href="@Url.Action("profile", "customer")"><i class="iicon basement-renting-user"></i> My Profile</a></li>
+        <li class="li_savesearch"><a href="@Url.Action("search-by-user", "savedsearch")"><i class="iicon basement-renting-folder"></i> Saved Search</a></li>
+        <li class="li_myfavoriteproperty"><a href="@Url.Action("favorite-properties", "property")"><i class="iicon basement-renting-whislist"></i> My Favorite Property</a></li>
+    </ul>
+}

@@ -1,0 +1,26 @@
+﻿<div class="navbar01 adminlogin">
+    <div class="container">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="@Url.Action("index", "home")"> @*Basement Rentin*@
+                <img src="~/Content/Images/logo.png" /></a>
+            <label class="navbar-toggler0">
+                <img src="~/Content/Images/menu-toogle-02.svg" />
+            </label>
+            <div class="navbar-nav-prn">
+                <ul class="navbar-nav01">
+                    <li class="li-home @(ViewContext.RouteData.Values["Action"].ToString() == "Index" ? "active" : "")">@Html.ActionLink("Home", "index", "home")</li>
+                    <li class="li-browse @(ViewContext.RouteData.Values["Action"].ToString() == "browse-rental-location" ? "active" : "")">@Html.ActionLink("Browse Rental Locations", "browse-rental-location", "region")</li>
+                    <li class="li-contact @(ViewContext.RouteData.Values["Action"].ToString() == "contact-us" ? "active" : "")">@Html.ActionLink("Contact Us", "contact-us", "customer")</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function (e) {
+        $('.navbar-toggler0').click(function (e) {
+            $('.navbar-nav-prn').slideToggle();
+        });
+    });
+</script>

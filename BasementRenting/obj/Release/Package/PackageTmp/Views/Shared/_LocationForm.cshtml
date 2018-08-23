@@ -1,0 +1,320 @@
+﻿@model EntityModel.DomainModel.SearchProperty
+
+@using (Html.BeginForm("get-searched-properties", "property", FormMethod.Post, new { id = "SearchForm", name = "SearchForm", currentpageindex = 1 }))
+{
+    <div class="location_formprn">
+        <div class="formdiv">
+            <div class="form-group fg01">
+                @Html.LabelFor(m => m.Keyword, new { @class = "frmlbl" }) <required>*</required> <i class="fa fa-question-circle-o" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="" data-original-title="2 Bedroom basement near intersection Bovaird/Torbram"></i>
+                @Html.TextBoxFor(m => m.Keyword, new { @class = "form-control", @placeholder = "Search for basement..." })
+            </div>
+
+            <div class="threeblock">
+                <div class="province-city col-div03">
+                    <div class="form-group col-div03_01">
+                        @Html.Label("Province", new { @class = "frmlbl" })
+                        @Html.DropDownListFor(m => m.lstProvince, new SelectList(Model.lstProvince, "Value", "Text"), new { @class = "form-control" })
+                        @Html.HiddenFor(m => m.ProvinceId)
+                    </div>
+                    <div class="form-group col-div03_01 d_2">
+                        @Html.Label("City", new { @class = "frmlbl" })
+                        @Html.DropDownListFor(m => m.lstCity, new SelectList(Model.lstCity, "Value", "Text"), new { @class = "form-control" })
+                        @Html.HiddenFor(m => m.CityId)
+                    </div>
+                </div>
+                <div class="form-group col-div01">
+                    @Html.Label("Price Range", new { @class = "frmlbl" })
+
+                    <div class="pricefromeortodiv">
+                        @Html.TextBoxFor(m => m.FromPrice, new { @class = "form-control", @placeholder = "0" })
+                        @Html.Label("To", new { @class = "frmlbl02" })
+                        @Html.TextBoxFor(m => m.ToPrice, new { @class = "form-control", @placeholder = "0" })
+                    </div>
+                </div>
+
+                <div class="form-group col-div02">
+                    @Html.LabelFor(m => m.AvailableFromDate, new { @class = "frmlbl" })
+                    @*@Html.TextBoxFor(m => m.AvailableFromDate, new { Type = "date", @class = "form-control", @placeholder = "" })*@
+
+                    @Html.TextBoxFor(m => m.AvailableFromDate, new { @class = "form-control form-date", @placeholder = "mm/dd/yyyy" })
+                    <script>$("#AvailableFromDate").datepicker();</script>
+                </div>
+            </div>
+
+            <div class="form-group moreoptprn" data-toggleprn>
+                <div class="anchorprn"><a href="javascript:void(0)" class="moreoptions more" data-toggleclick><i class="zmdi zmdi-plus-circle"></i><text> More Options</text> </a></div>
+                <div data-divtoggle>
+                    <div class="clearfix"></div>
+                    <div class="col-div-twoblock">
+                        <div class="col-div1">
+                            @Html.LabelFor(m => m.NoOfBedRooms, new { @class = "frmlbl" })
+
+                            @{
+                                List<SelectListItem> lstNoOfBedrooms = new List<SelectListItem>
+                                {
+                                    new SelectListItem { Text = "Select bedroom", Value = "00"},
+                                    new SelectListItem { Text = "01", Value = "01"},
+                                    new SelectListItem { Text = "02", Value = "02"},
+                                    new SelectListItem { Text = "03", Value = "03"},
+                                };
+                            }
+                            @Html.DropDownListFor(m => m.NoOfBedRooms, lstNoOfBedrooms, new { @class = "form-control" })
+                        </div>
+                        <div class="col-div2">
+                            <div class="form-group selectprn">
+                                @Html.LabelFor(m => m.NoOfBathRooms, new { @class = "frmlbl" })
+
+                                @{
+                                    List<SelectListItem> lstNoOfBathrooms = new List<SelectListItem>
+                                    {
+                                        new SelectListItem { Text = "Select bathroom", Value = "00"},
+                                        new SelectListItem { Text = "01", Value = "01"},
+                                        new SelectListItem { Text = "02", Value = "02"},
+                                    };
+                                }
+                                @Html.DropDownListFor(m => m.NoOfBathRooms, lstNoOfBathrooms, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-div3">
+                            @Html.LabelFor(m => m.DistanceFromSchool, new { @class = "frmlbl" })
+                            @Html.TextBoxFor(m => m.DistanceFromSchool, new { @class = "form-control", @placeholder = "Distance from school" })
+                        </div>
+
+                    </div>
+                    <div class="buildingamenities">
+                        <div class="form-group02">
+                            @Html.Label("Building Amenities", new { @class = "frmlbl" })
+                            <ul class="ulcheckboxprn">
+                                <li>
+                                    <label class="customcheckboxp">
+                                        @Html.CheckBoxFor(m => m.SeparateEntrance)
+                                        <span class="customcheckbox"></span>@Html.LabelFor(m => m.SeparateEntrance)
+                                    </label>
+                                </li>
+
+                                <li>
+                                    <label class="customcheckboxp">
+                                        @Html.CheckBoxFor(m => m.SeparateLaundry)
+                                        <span class="customcheckbox"></span>@Html.LabelFor(m => m.SeparateLaundry)
+                                    </label>
+                                </li>
+
+                                <li>
+                                    <label class="customcheckboxp">
+                                        @Html.CheckBoxFor(m => m.Internet)
+                                        <span class="customcheckbox"></span>@Html.LabelFor(m => m.Internet)
+                                    </label>
+                                </li>
+
+                                <li>
+                                    <label class="customcheckboxp">
+                                        @Html.CheckBoxFor(m => m.TV)
+                                        <span class="customcheckbox"></span>@Html.LabelFor(m => m.TV)
+                                    </label>
+                                </li>
+
+                                <li>
+                                    <label class="customcheckboxp">
+                                        @Html.CheckBoxFor(m => m.Furnished)
+                                        <span class="customcheckbox"></span>@Html.LabelFor(m => m.Furnished)
+                                    </label>
+                                </li>
+
+                                <li>
+                                    <label class="customcheckboxp">
+                                        @Html.CheckBoxFor(m => m.SmokeFriendly)
+                                        <span class="customcheckbox"></span>@Html.LabelFor(m => m.SmokeFriendly)
+                                    </label>
+                                </li>
+
+                                <li>
+                                    <label class="customcheckboxp">
+                                        @Html.CheckBoxFor(m => m.PetFriendly)
+                                        <span class="customcheckbox"></span>@Html.LabelFor(m => m.PetFriendly)
+                                    </label>
+                                </li>
+
+                                <li>
+                                    <label class="customcheckboxp">
+                                        @Html.CheckBoxFor(m => m.WalkOut)
+                                        <span class="customcheckbox"></span>@Html.LabelFor(m => m.WalkOut)
+                                    </label>
+                                </li>
+
+                                <li>
+                                    <label class="customcheckboxp">
+                                        @Html.CheckBoxFor(m => m.ParkingAvailable)
+                                        <span class="customcheckbox"></span>@Html.LabelFor(m => m.ParkingAvailable)
+                                    </label>
+                                </li>
+
+                                <li>
+                                    <label class="customcheckboxp">
+                                        @Html.CheckBoxFor(m => m.VegetarianOnly)
+                                        <span class="customcheckbox"></span>@Html.LabelFor(m => m.VegetarianOnly)
+                                    </label>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group btnprn">
+                @*<button type="reset" id="btnClearPropertyForm" class="btn btn-twogray"><i class="iicon basement-renting-refresh"></i> Clear </button>*@
+                <button type="button" id="btnClearPropertyForm" class="btn btn-twogray"><i class="iicon basement-renting-refresh"></i> Clear </button>
+                <button type="submit" id="btnSearchProperty" onclick="return checkSearchFormValidation();" class="btn btn-twoblue"><i class="iicon basement-renting-search"></i> Search </button>
+            </div>
+
+            @if (Session["userid"] != null && Session["userrole"].ToString() == "Tenant")
+            {
+                <div class="form-group btnprn02">
+                    <button type="button" id="btnSaveSearch" class="btn btn-flategreen"><i class="iicon basement-renting-folder"></i> Save the search </button>
+                </div>
+            }
+
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    $(function () {
+        $('[data-toggleclick]').click(function (e) {
+            $(this).toggleClass('more');
+            $(this).toggleClass('less');
+            $(this).closest('[data-toggleprn]').find('[data-divtoggle]').toggleClass('openn');
+            $('.moreoptions.more text').text('More Options');
+            $('.moreoptions.less text').text('Less Options');
+        });
+    });
+
+    $(document).ready(function () {
+        $("#FromPrice, #ToPrice, #DistanceFromSchool").keypress(function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                return false;
+            }
+        });
+
+        if ($("#FromPrice").val() == 0) {
+            $("#FromPrice").val('');
+        }
+        if ($("#ToPrice").val() == 0) {
+            $("#ToPrice").val('');
+        }
+        if ($("#DistanceFromSchool").val() == 0) {
+            $("#DistanceFromSchool").val('');
+        }
+
+        if (@Model.ProvinceId != 0) {
+            $("#lstProvince").val(@Model.ProvinceId);
+
+            setTimeout(function () {
+                $("#lstProvince").change();
+
+                if (@Model.CityId != 0) {
+                    $("#lstCity").val(@Model.CityId);
+                }
+            }, 500);
+        }
+
+        $("#btnClearPropertyForm").click(function () {
+            $("#Keyword").val('');
+            $("#AvailableFromDate").val('');
+            $("#FromPrice").val('');
+            $("#ToPrice").val('');
+            $("#NoOfBedRooms").val($("#NoOfBedRooms option:first").val());
+            $("#NoOfBathRooms").val($("#NoOfBathRooms option:first").val());
+            $("#DistanceFromSchool").val('');
+            $('.ulcheckboxprn').find("input[type='checkbox']").prop('checked', false);
+            $("#lstProvince").val($("#lstProvince option:first").val());
+            $("#lstProvince").change();
+        });
+
+        $("#btnSaveSearch").click(function () {
+            if ($("#Keyword").val() != '') {
+                $("#Keyword").css("border-color", "");
+
+                $.confirm({
+                    title: 'Confirm!',
+                    content: 'By confirming this, your existing search will be saved and previous search will be removed if exist. Are you sure you want to do this?',
+                    buttons: {
+                        confirm: function () {
+                            //var SearchFormData = $("#SearchForm").serialize();
+                            var SaveSearchModelData = '@Html.Raw(Json.Encode(Model))';
+
+                            $.ajax({
+                                url: '@Url.Action("save-search", "savedsearch")',
+                                type: "POST",
+                                data: { 'objSaveSearchModelData': SaveSearchModelData },
+                                success: function (data) {
+                                    if (data == true) {
+                                        $.alert({
+                                            title: 'Success!',
+                                            content: 'Your search criteria are saved now!',
+                                        });
+                                    }
+                                    else {
+                                        $.alert({
+                                            title: 'Failed!',
+                                            content: 'Something went wrong, please try again after sometime!',
+                                        });
+                                    }
+                                },
+                                error: function (data) {
+                                    console.log(data);
+                                }
+                            }); //end - ajax call
+                        },
+                        cancel: function () {
+                        }
+                    }
+                }); //end of confirm
+            }
+            else {
+                $("#Keyword").css("border-color", "red");
+            }
+        }); //end of savesearch button click
+
+        $("#lstProvince").change(function () {
+            var selectedProvinceId = $("#lstProvince option:selected").val();
+
+            $.ajax({
+	            url: "@Url.Action("getcitylistbyprovinceid", "landlord")",
+	            type: "POST",
+                data: { 'ProvinceId': selectedProvinceId },
+	            async: false,
+	            dataType: "json",
+                success: function (response) {
+                    if (response != false) {
+                        $("#lstCity").empty();
+                        $.each(response, function () {
+                            $("#lstCity").append($("<option></option>").val(this['Value']).html(this['Text']));
+                        });
+                        $("#lstCity option:first").text("City"); //to set text from "select city" to "city"
+                    }
+	            },
+	            error: function () {
+		            console.log("Error Occured!");
+	            }
+            });//end - ajax call
+        }); //end of province dropdown change event
+
+    }); //end of doc ready
+
+
+    function checkSearchFormValidation() {
+        if ($("#Keyword").val() != '') {
+            $("#Keyword").css("border-color", "");
+
+            return true;
+        }
+        else {
+            $("#Keyword").css("border-color", "red");
+
+            //$("html, body").delay(500).animate({
+            //    scrollTop: $('.breadcrumb').offset().top
+            //}, 1000);
+
+            return false;
+        }
+    }
+</script>

@@ -1,0 +1,194 @@
+﻿@model EntityModel.DomainModel.UserProfile
+
+@*@using System.Web*@
+
+@{
+    ViewBag.Title = "MyAccount";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var userrole = Convert.ToString(Session["userrole"]);
+}
+
+<div class="myprofile_pg myaccount_pg">
+
+
+    <div class="breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-item active">My Account</div>
+        </div>
+    </div>
+    <section class="secton_middle_containt">
+        <div class="container">
+            @*@Html.Partial("~/Views/Common/_ProfileView.cshtml")*@
+
+            <div class="row">
+                <div class="myaccount_sidebar">
+                    @Html.Partial("_MyProfileMenu")
+                </div>
+                <div class="myaccount_containt">
+                    @if (ViewBag.UpdateProfileStatus != null)
+                    {
+                        <h4>@ViewBag.UpdateProfileStatus</h4>
+                    }
+                    <div class="card">
+                        <div class="card-header"> My Profile </div>
+                        <div class="card-body">
+                            @using (Html.BeginForm("update-profile", "customer", FormMethod.Post, new { @id = "UpdateProfileForm" }))
+                            {
+                                <div class="formdiv">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                @Html.Label("Name", new { @class = "frm-label" })
+                                                @Html.TextBoxFor(x => x.UserName, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                @Html.Label("Email", new { @class = "frm-label" })
+                                                @Html.TextBoxFor(x => x.EmailId, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group">
+                                                @Html.Label("Phone Number", new { @class = "frm-label" })
+                                                @Html.TextBoxFor(x => x.PhoneNo, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                   <div class="form-group btn-prn">
+                                        <button type="button" id="btnUpdateProfile" class="btn btn-twoblue"><i class="iicon basement-renting-folder"></i> Save Profile</button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <h4 class="password-change-status"></h4>
+                    <div class="card">
+                        <div class="card-header">
+                             Change Password
+                        </div>
+                        <div class="card-body">
+                            @using (Html.BeginForm("", "", new { @id = "UpdatePasswordForm" }))
+                            {
+                                <div class="formdiv">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                @Html.Label("New Password", new { @class = "frm-label" })
+                                                @*@Html.TextBoxFor(x=>x.UserName, new { @class = "form-control", @placeholder = "Enter Your New Password" })*@
+                                                @Html.Password("NewPassword", null, new { @class = "form-control", @placeholder = "Enter Your New Password" })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                @Html.Label("Confirm Password", new { @class = "frm-label" })
+                                                @*@Html.TextBox("ConfirmPassword", new { @class = "form-control", @placeholder = "Enter Your Confirm Password" })*@
+                                                @Html.Password("ConfirmPassword", null, new { @class = "form-control", @placeholder = "Enter Your Confirm Password" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group btn-prn">
+                                        <button type="button" id="btnUpdatePassword" class="btn btn-twoblue"> <i class="iicon basement-renting-key"></i> Change Password</button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    $(function () {
+        $('.top-footer').addClass('border');
+        $('.li_myprifile').addClass('current');
+        
+        if ($('.myaccount_sidebar ul').length) {
+            $('.myaccount_sidebar').addClass('col-lg-3');
+            $('.myaccount_containt').addClass('col-lg-9');
+        }
+        else { $('.myaccount_containt').addClass('col-lg-12'); }
+    });
+
+
+
+    $(document).ready(function () {
+        $("#btnUpdateProfile").click(function () {
+            //start - To reset validations
+            var SubmitForm = true;
+            $("#UserName").css("border-color", "");
+            $("#EmailId").css("border-color", "");
+            $("#PhoneNo").css("border-color", "");
+            //end - To reset validations
+
+            if ($("#UserName").val() == "") {
+                $("#UserName").css("border-color", "red");
+                SubmitForm = false;
+            }
+            if ($("#EmailId").val() == "") {
+                $("#EmailId").css("border-color", "red");
+                SubmitForm = false;
+            }
+            if ($("#PhoneNo").val() == "") {
+                $("#PhoneNo").css("border-color", "red");
+                SubmitForm = false;
+            }
+
+            if (SubmitForm == true) {
+                $("#UpdateProfileForm").submit();
+            }
+        });
+
+        $("#btnUpdatePassword").click(function () {
+            //start - To reset validations
+            $(".password-change-status").html("");
+            $("#NewPassword").css("border-color", "");
+            $("#ConfirmPassword").css("border-color", "");
+            var GoToAjax = true;
+            //end - To reset validations
+
+            if ($("#NewPassword").val() == "") {
+                $("#NewPassword").css("border-color", "red");
+                GoToAjax = false;
+            }
+            if ($("#ConfirmPassword").val() == "") {
+                $("#ConfirmPassword").css("border-color", "red");
+                GoToAjax = false;
+            }
+
+            if (GoToAjax == true && $("#NewPassword").val() == $("#ConfirmPassword").val()) {
+                $.ajax({
+                    url: "@Url.Action("update-password", "customer")",
+                    type: "POST",
+                    data: { 'NewPassword': $('#ConfirmPassword').val() },
+                    //async: false,
+                    //dataType: "json",
+                    //traditional: true,
+                    //contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        if (data != 'False') {
+                            $(".password-change-status").html("New Password has been updated successfully..!");
+                            $(".password-change-status").removeClass("alert alert-danger text-center").addClass("alert alert-success text-center");
+                        }
+                        else {
+                            $(".password-change-status").html("Something went wrong, please try again after sometime..!");
+                            $(".password-change-status").removeClass("alert alert-success text-center").addClass("alert alert-danger text-center");
+                        }
+                    },
+                    error: function () {
+                        console.log("Error Occured!");
+                    }
+                });//end - ajax call
+            }
+            else {
+                if (GoToAjax == true) {
+                    $(".password-change-status").html("New Password and Confirm Password doest not match..!");
+                    $(".password-change-status").removeClass("alert alert-success text-center").addClass("alert alert-danger text-center");
+                }
+            }
+        }); //end of update button click
+    }); //end of doc ready
+</script>

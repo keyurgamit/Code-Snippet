@@ -1,0 +1,49 @@
+﻿@model List<EntityModel.DomainModel.Property>
+
+@if (Model.Count > 0)
+{
+    foreach (var item in Model)
+    {
+        <div class="divslideruse">
+            <div class="property-item" data-productid="@item.Id">
+                <span class='pr_remove remove-from-favourite' data-product-id="@item.Id">X</span>
+                <div class="property-picture">
+                    <label class="btn btn-price"> $ @item.MonthlyRent <sup>/per Month</sup> </label>
+                    @if (item.IsFeatured == true)
+                    {
+                        <div class="featured_prn"> <span>Featured</span></div>
+                    }
+                    <a class="picture_link" href="" title="@item.PropertyTitle">
+                        <img class="picture_thumbs" alt="@item.PropertyTitle" src="@item.ImagePath" title="@item.PropertyTitle" />
+                    </a>
+                </div>
+                <div class="property_desc">
+                    <div class="property_title"> @item.PropertyTitle</div>
+                    <div class="property_addresh"><i class="iicon basement-renting-location"></i> @item.StreetAddress</div>
+                    <div class="property_vdetail"><a href="@Url.Action("propertydetails", "property", new { propertyid = item.Id})">View Details <icon>»</icon></a></div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<script>
+    $(document).ready(function () {
+        $(".remove-from-favourite").click(function () {
+
+            var ProductId = $(this).attr("data-product-id");
+
+            $.ajax({
+                url: "@Url.Action("ToggleFavouritePropertyByUser", "property")",
+                type: "POST",
+                data: { 'PropertyId': ProductId, 'ToggleFavourite': true },
+                success: function (data) {
+                    location.reload();
+                },
+                error: function () {
+                    console.log("Error Occured!");
+                }
+            });//end - ajax call
+        });
+    }); //end of doc ready
+</script>

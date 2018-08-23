@@ -1,0 +1,319 @@
+﻿@model List<EntityModel.DomainModel.RegisterCustomer>
+
+@{
+    //string action = ViewContext.RouteData.Values["action"].ToString();
+    ////string controller = HttpContext.Current.Request.RequestContext.RouteData.Values["controller"].ToString();
+    //var SubmitActionName = "";
+
+    //if(action == "homepage-cms")
+    //{
+    //    SubmitActionName = "update-homepage-content";
+    //}
+    //else if(action == "terms-conditions")
+    //{
+    //    SubmitActionName = "update-termsandconditions";
+    //}
+
+    int TotalPages = 0;
+    int SelectedUserRoleId = Convert.ToInt32(Convert.ToString(ViewBag.UserRoleId).Trim());
+    int CurrentPageIndex = Convert.ToInt32(Convert.ToString(ViewBag.CurrentPageIndex).Trim());
+}
+
+<div class="userlisting-page">
+    <div class="breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-item active">User Management</div>
+        </div>
+    </div>
+    <section class="secton_middle_containt">
+        <div class="container">
+            <div class="row">
+                <div class="myaccount_sidebar">
+                    @Html.Partial("_MyProfileMenu")
+                </div>
+                <div class="myaccount_containt">
+                    @if (Model.Any())
+                    {
+                        <div class="card">
+                            <div class="card-header"> User Management </div>
+                            <div class="card-body">
+                                <div class="formdiv">
+                                    <div class="user-types">
+                                        @using (Html.BeginForm("filter-users", "admin", FormMethod.Post, new { @Id = "FilterUsers" }))
+                                        {
+                                            if (ViewBag.UserRoles != null)
+                                            {
+                                                <div class="row">
+                                                    <div class="col-lg-2">
+                                                        @Html.Label("User Select", new { @class = "frm-label" })
+                                                    </div>
+                                                    <div class="col-lg-6">
+                                                        @Html.DropDownList("UserRoles", @ViewBag.UserRoles as SelectList, new { @class = "form-control" })
+                                                    </div>
+                                                </div>
+                                            }
+                                        }
+                                    </div>
+                                    <div class="user-listing">
+                                        @*@using (Html.BeginForm("manage-users", "admin", FormMethod.Post, new { @Id = "ManageUsers" }))
+                                            {
+                                                <input type="hidden" id="hiddenUserRoleId" name="hiddenUserRoleId" value="@ViewBag.UserRoleId" />
+                                                <input type="hidden" id="hiddenPageIndex" name="hiddenPageIndex" value="@ViewBag.CurrentPageIndex" />
+                                            }*@
+                                        <table class="table  table-bordered table-hover">
+                                            <thead class="bg-light">
+                                                <tr>
+                                                    <td>User Name</td>
+                                                    <td>Email</td>
+                                                    <td>Phone Number</td>
+                                                    <td>Active</td>
+                                                    <td>Deleted</td>
+                                                    <td></td>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var user in Model)
+                                                {
+                                                    <tr class="user-record-@user.Id">
+                                                        <td data-thd="User Name" class="username">@user.UserName</td>
+                                                        <td data-thd="Email" class="emailid">@user.EmailId</td>
+                                                        <td data-thd="Phone Number" class="phone-no">@user.PhoneNo</td>
+                                                        <td data-thd="Active" class="td-active"> <label class="chk-active"> <input type="checkbox" class="IsPublished" @(user.Published ? "checked=\"checked\"" : "") disabled /><span class="innercheckbox"></span> </label></td>
+                                                        <td data-thd="Deleted" class="td-deleted"><label class="chk-delete"> <input type="checkbox" class="IsDeleted" @(user.IsDeleted ? "checked=\"checked\"" : "") disabled /><span class="innercheckbox"></span></label> </td>
+                                                        <td class="user-edit">
+                                                            <button type="button" class="btn btn-flategreen edit-user" data-userid="@user.Id"><i class="zmdi zmdi-edit"></i> Edit </button>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                                @if (Model.Count > 0)
+                                {
+                                    TotalPages = Model.FirstOrDefault().TotalPages;
+
+                                    if (TotalPages > 1)
+                                    {
+                                        <div class="userlisting-pagination">
+                                            <ul class="pagination">
+                                                <li class="page-item previous"><a class="page-link"><i class="zmdi zmdi-chevron-left"></i><span class="go-to-page"></span></a></li>
+                                                @for (int i = 1; i <= TotalPages; i++)
+                                                {
+                                                    <li class="page-item"><a class="page-link go-to-page pglink_@i" href="javascript:void(0)"><span>@i</span></a></li>
+                                                }
+                                                <li class="page-item next"><a class="page-link"><i class="zmdi zmdi-chevron-right"></i></a></li>
+                                            </ul>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- Trigger the modal with a button -->
+<button type="button" class="btn btn-info btn-lg edit-user-data" data-toggle="modal" style="display:none;" data-target="#myModal">Open Modal</button>
+
+<div class="modal in fade theme-modal updateuser-modal" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-dialog-inner">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close register-success-closemodel" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Update User</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="formdiv">
+                        <input type="hidden" id="EditUserId" class="edit-userid" value="" />
+                        <div class="form-group row">
+                            <div class="col-4"> <label class="col-form-label">Username: </label></div>
+                            <div class="col-8"><input type="text" id="EditUsername" class="edit-username form-control" /></div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-4"> <label class="col-form-label">Email: </label></div>
+                            <div class="col-8"> <input type="text" id="EditEmail" class="edit-email form-control" /></div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-4"> <label class="col-form-label">Phone Number: </label></div>
+                            <div class="col-8"> <input type="text" id="EditPhonenumber" class="edit-phonenumber form-control" /></div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-4"> <label class="col-form-label">Active: </label></div>
+                            <div class="col-8"><input type="checkbox" id="EditPublished" class="edit-published col-form-checkbox" /></div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-4"> <label class="col-form-label">Delete: </label></div>
+                            <div class="col-8"><input type="checkbox" id="EditDelete" class="edit-delete col-form-checkbox" /></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-close-popup" data-dismiss="modal" style="display:none;">Close</button>
+                    <button type="button" class="btn btn-success update-user-record"><i class="fa fa-floppy-o" aria-hidden="true"></i> Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        $('.top-footer').addClass('border');
+        $('.li_manageusers').addClass('current');
+
+        if ($('.myaccount_sidebar ul').length) {
+            $('.myaccount_sidebar').addClass('col-lg-3');
+            $('.myaccount_containt').addClass('col-lg-9');
+        }
+        else { $('.myaccount_containt').addClass('col-lg-12'); }
+    });
+
+    $(document).ready(function () {
+        var CurrentPageIndex = parseInt(GetQueryStringValue('pageindex'));
+        if (CurrentPageIndex >= 2) {
+            $(".page-item.previous").removeClass('disable');
+        }
+        else {
+            $(".page-item.previous").addClass('disable');
+        }
+
+        if (CurrentPageIndex != (@TotalPages))
+        {
+            $(".page-item.next").removeClass('disable');
+        }
+        else {
+            $(".page-item.next").addClass('disable');
+        }
+
+        $('.page-item  .page-link').removeClass('active');
+        $('.pglink_' + CurrentPageIndex ).addClass('active');
+
+        //start - go to previous
+        $(".page-item.previous").click(function () {
+            var CurrentPageIndex = parseInt(GetQueryStringValue('pageindex'));
+            if (CurrentPageIndex >= 2) {
+                $(".page-item.previous").removeClass('disable');
+                var goToUrl = '@Url.Action("manage-users", "admin", new { userroleid = Convert.ToInt32(SelectedUserRoleId), pageindex = Convert.ToInt32(CurrentPageIndex-1) })';
+                window.location.href = goToUrl.replace(/&amp;/g, '&');
+            }
+            else {
+                $(".page-item.previous").addClass('disable');
+            }
+        });
+        //end - go to previous
+
+        //start - go to next
+        $(".page-item.next").click(function () {
+            var CurrentPageIndex = parseInt(GetQueryStringValue('pageindex'));
+            if (CurrentPageIndex != (@TotalPages))
+            {
+                $(".page-item.next").removeClass('disable');
+
+                //$("#ManageUsers").submit();
+                var goToUrl = '@Url.Action("manage-users", "admin", new { userroleid = Convert.ToInt32(SelectedUserRoleId), pageindex = Convert.ToInt32(CurrentPageIndex+1) })';
+                window.location.href = goToUrl.replace(/&amp;/g, '&');
+            }
+            else {
+                $(".page-item.next").addClass('disable');
+            }
+        });
+        //end - go to next
+
+        //start - go to page
+        $(".go-to-page").click(function () {
+            var pageindex = $(this).children('span').html();
+
+            //$("#ManageUsers").submit();
+            var goToUrl = '@Url.Action("manage-users", "admin")' + '?userroleid=' + $("#UserRoles").val() + '&pageindex=' + pageindex;
+            window.location.href = goToUrl.replace(/&amp;/g, '&');
+        });
+        //end - go to page
+
+        $("#UserRoles").change(function () {
+            $("#FilterUsers").submit();
+        });
+
+        $(".edit-user").click(function () {
+            $(".edit-published").prop('checked', false);
+            $(".edit-delete").prop('checked', false);
+
+            var SelectedUserId = $(this).attr('data-userid');
+            $(".edit-userid").val(SelectedUserId);
+            $(".edit-username").val($(".user-record-" + SelectedUserId + " .username").text());
+            $(".edit-email").val($(".user-record-" + SelectedUserId + " .emailid").text());
+            $(".edit-phonenumber").val($(".user-record-" + SelectedUserId + " .phone-no").text());
+
+            if ($(".user-record-" + SelectedUserId + " .IsPublished").prop("checked") == true) {
+                $(".edit-published").prop('checked', true);
+            }
+            if ($(".user-record-" + SelectedUserId + " .IsDeleted").prop("checked") == true) {
+                $(".edit-delete").prop('checked', true);
+            }
+
+            $(".edit-user-data").click();
+        });
+
+        $(".update-user-record").click(function () {
+            $.ajax({
+		        url: "@Url.Action("update-user", "admin")",
+                type: "POST",
+                data: { 'UserId': $("#EditUserId").val(), 'Username': $('#EditUsername').val(), 'Email': $("#EditEmail").val(), 'Phonenumber': $("#EditPhonenumber").val(), 'IsPublished': $("#EditPublished").prop("checked"), 'IsDeleted': $("#EditDelete").prop("checked") },
+		        async: false,
+                success: function (data) {
+                    if (data == true) {
+                        $(".btn-close-popup").click();
+                        $.confirm({
+                            title: 'Success',
+                            content: 'Record updated successfully!',
+                            buttons: {
+                                somethingElse: {
+                                    text: 'Okay',
+                                    btnClass: 'btn-blue',
+                                    keys: ['enter', 'shift'],
+                                    action: function () {
+                                        location.reload();
+                                    }
+                                }
+                            }
+                        });
+                    }
+		        },
+		        error: function () {
+                    $(".btn-close-popup").click();
+                    $.confirm({
+                        title: 'Alert!',
+                        content: 'Something went wrong, please try again after sometime!',
+                        buttons: {
+                            somethingElse: {
+                                text: 'Okay',
+                                btnClass: 'btn-blue',
+                                keys: ['enter', 'shift'],
+                                action: function () {
+                                    location.reload();
+                                }
+                            }
+                        }
+                    });
+		        }
+	        });//end - ajax call
+        });
+    }); //end of doc ready
+
+    function GetQueryStringValue(param) {
+        var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for (var i = 0; i < url.length; i++) {
+            var urlparam = url[i].split('=');
+            if (urlparam[0] == param) {
+                return urlparam[1];
+            }
+        }
+    }
+</script>

@@ -1,0 +1,646 @@
+﻿@model EntityModel.DomainModel.Property
+
+@{
+    ViewBag.Title = "Property";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    //string FromActionName = ViewContext.RouteData.Values["action"].ToString();
+    ////string controller = HttpContext.Current.Request.RequestContext.RouteData.Values["controller"].ToString();
+    //string SubmitActionName = "";
+
+    //if (FromActionName == "property")
+    //{
+    //    SubmitActionName = "save-property";
+    //}
+    //else //from action: edit-property
+    //{
+    //    SubmitActionName = "save-property";
+    //}
+}
+
+<script src="~/Content/ckeditor_standard/ckeditor.js"></script>
+
+<div class="submit-property-form">
+    @using (Html.BeginForm("save-property", "admin", FormMethod.Post, new { enctype = "multipart/form-data", id = "SubmitProperty" }))
+    {
+        <div class="breadcrumb">
+            <div class="container">
+                <div class="breadcrumb-item active">
+                    <span>Submit Property</span>
+                </div>
+            </div>
+        </div>
+
+        <section class="section-submitproperty">
+            <div class="container">
+                @if (!string.IsNullOrEmpty(ViewBag.PropertyUpdateStatus))
+                {
+                    <div class="alert alert-success" role="alert">
+                        <strong> @ViewBag.PropertyUpdateStatus </strong>
+                    </div>
+                }
+
+                <div class="card crd01">
+                    <div class="card-header"> General Details </div>
+                    <div class="card-body">
+                        <article class="formdiv general-details">
+                            @Html.HiddenFor(x => x.Id, new { @id = "PropertyId" })
+                            @Html.HiddenFor(x => x.ProvinceId, new { @id = "ProvinceId" })
+                            @Html.HiddenFor(x => x.UserId, new { @id = "LandlordId" })
+
+                            <div class="row r1">
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        @Html.LabelFor(m => m.PropertyTitle, new { @class = "form_label" })<required>*</required> <i class="fa fa-question-circle-o" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Enter the Title for your property"></i>
+                                        @Html.TextBoxFor(m => m.PropertyTitle, new { @class = "form-control", @placeholder = "Enter Property Title" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-xl-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.MonthlyRent, new { @class = "form_label" })<required>*</required> <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Enter Monthly Rent in $"></i>
+                                        @Html.TextBoxFor(m => m.MonthlyRent, new { @class = "form-control", @placeholder = "$" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-xl-2">
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.AvailableFromDate, new { @class = "form_label" })<required>*</required> <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Date from when the property will be available"></i>
+                                        @*@Html.TextBoxFor(m => m.AvailableFromDate, new { @min = DateTime.Now.ToString("yyyy-MM-dd"), @type = "date", @class = "form-control", @placeholder = "Property Availability Date" })*@
+
+                                        @Html.TextBoxFor(m => m.AvailableFromDate, new { @class = "form-control form-date", @placeholder = "mm/dd/yyyy" })
+                                        <script>$("#AvailableFromDate").datepicker();</script>
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                        <article class="formdiv address">
+                            <h5 class="form-title"> Address</h5>
+                            <div class="row r1">
+                                <div class="col-md-6">
+                                    <div class="form-group ">
+                                        @Html.LabelFor(m => m.StreetAddress, new { @class = "form_label" })<required>*</required> <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Street address for your property"></i>
+                                        @Html.TextBoxFor(m => m.StreetAddress, new { @class = "form-control", @placeholder = "Enter Street Address" })
+                                    </div>
+                                </div>
+                                <div class="col-md-3 col-lg-3 col-xl-2">
+                                    <div class="form-group ">
+                                        @Html.LabelFor(m => m.PostalCode, new { @class = "form_label" })<required>*</required> <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Postal code of your property"></i>
+                                        @Html.TextBoxFor(m => m.PostalCode, new { @class = "form-control", @placeholder = "Postal Code" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row r2">
+                                <div class="col-md-4">
+                                    <div class="form-group ">
+                                        @Html.LabelFor(m => m.lstProvince, new { @class = "form_label" })<required>*</required> <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Province where your property is located"></i>
+                                        @Html.DropDownListFor(m => m.lstProvince, new SelectList(Model.lstProvince, "Value", "Text"), new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group ">
+                                        @Html.LabelFor(m => m.lstCity, new { @class = "form_label" })<required>*</required> <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="City where your property is located"></i>
+                                        @Html.DropDownListFor(m => m.lstCity, new SelectList(Model.lstCity, "Value", "Text"), new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row r3">
+                                <div class="col-md-9">
+                                    <div class="form-group ">
+                                        @Html.LabelFor(m => m.PropertyInformation, new { @class = "form_label" }) <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Enter relevant information about your property"></i>
+                                        @Html.TextAreaFor(m => m.PropertyInformation, new { @class = "form-control" })
+
+                                        <script>CKEDITOR.replace("PropertyInformation");</script>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </article>
+                    </div>
+                </div>
+
+                <div class="card crd02">
+                    <div class="card-header"> Key Property Details </div>
+                    <div class="card-body">
+                        <article class="formdiv key-property-details">
+                            <div class="row r1">
+                                <div class="col-md-6 col-lg-5 col-xl-4">
+                                    <div class="form-group ">
+                                        @Html.LabelFor(m => m.lstNoOfBedrooms, new { @id = "NoOfBedroom", @name = "NoOfBedroom", @class = "form_label" })<required>*</required> <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Available bedrooms in your property"></i>
+                                        @Html.DropDownListFor(m => m.lstNoOfBedrooms, new SelectList(Model.lstNoOfBedrooms, "Value", "Text"), new { @class = "form-control" })
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-5 col-xl-4">
+                                    <div class="form-group ">
+                                        @Html.LabelFor(m => m.lstNoOfBathrooms, new { @id = "NoOfBathroom", @name = "NoOfBathroom", @class = "form_label" })<required>*</required> <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Available bathroom in your property"></i>
+                                        @Html.DropDownListFor(m => m.lstNoOfBathrooms, new SelectList(Model.lstNoOfBathrooms, "Value", "Text"), new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row r2">
+                                <div class="col-md-6 col-lg-5 col-xl-4">
+                                    <div class="form-group ">
+                                        @Html.LabelFor(m => m.Area, new { @class = "form_label" }) <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Enter approx area of your property"></i>
+                                        @Html.TextBoxFor(m => m.Area, new { @class = "form-control", @placeholder = "Approx Area" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="custom_radio_group">
+                                <div class="row r3">
+                                    <div class="col-md-6 col-lg-5 col-xl-4">
+                                        <div class="form-group ">
+                                            @Html.LabelFor(m => m.IsSeparateEntrance, new { @class = "form_label" }) <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Select 'Yes' if your property has separate entrance"></i>
+                                            <div class="radiotwoprn">
+                                                <label class="customradiop">
+                                                    @Html.RadioButtonFor(m => m.IsSeparateEntrance, "true", new { @checked = "checked" }) <span class="customradio"></span> Yes
+                                                </label>
+                                                <label class="customradiop">
+                                                    @Html.RadioButtonFor(m => m.IsSeparateEntrance, "false") <span class="customradio"></span> No
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-5 col-xl-4">
+                                        <div class="form-group ">
+                                            @Html.LabelFor(m => m.IsPetFriendly, new { @class = "form_label" }) <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Select 'Yes' if your property is Pet Friendly"></i>
+                                            <div class="radiotwoprn">
+                                                <label class="customradiop">
+                                                    @Html.RadioButtonFor(m => m.IsPetFriendly, "true", new { @checked = "checked" }) <span class="customradio"></span> Yes
+                                                </label>
+                                                <label class="customradiop">
+                                                    @Html.RadioButtonFor(m => m.IsPetFriendly, "false") <span class="customradio"></span> No
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row r4">
+                                    <div class="col-md-6 col-lg-5 col-xl-4">
+                                        <div class="form-group ">
+                                            @Html.LabelFor(m => m.IsSeparateLaundry, new { @class = "form_label" }) <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Select 'Yes' if your property has separate laundry"></i>
+                                            <div class="radiotwoprn">
+                                                <label class="customradiop">
+                                                    @Html.RadioButtonFor(m => m.IsSeparateLaundry, "true", new { @checked = "checked" }) <span class="customradio"></span> Yes
+                                                </label>
+                                                <label class="customradiop"> @Html.RadioButtonFor(m => m.IsSeparateLaundry, "false") <span class="customradio"></span> No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-5 col-xl-4">
+                                        <div class="form-group ">
+                                            @*@Html.LabelFor(m => m.IsWalkOutOrNot, new { @class = "form_label" }) <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Select 'Yes' if your property has walkout or not"></i>*@
+                                            @Html.Label("Walkout", new { @class = "form_label" }) <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Select 'Yes' if your property has walkout or not"></i>
+                                            <div class="radiotwoprn">
+                                                <label class="customradiop">
+                                                    @Html.RadioButtonFor(m => m.IsWalkOutOrNot, "true", new { @checked = "checked" }) <span class="customradio"></span> Yes
+                                                </label>
+                                                <label class="customradiop">  @Html.RadioButtonFor(m => m.IsWalkOutOrNot, "false") <span class="customradio"></span> No </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row r5">
+                                    <div class="col-md-6 col-lg-5 col-xl-4">
+                                        <div class="form-group ">
+                                            @Html.LabelFor(m => m.IsInternet, new { @class = "form_label" }) <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Select 'Yes' if your property has Internet facility"></i>
+                                            <div class="radiotwoprn">
+                                                <label class="customradiop">
+                                                    @Html.RadioButtonFor(m => m.IsInternet, "true", new { @checked = "checked" }) <span class="customradio"></span> Yes
+                                                </label>
+                                                <label class="customradiop">@Html.RadioButtonFor(m => m.IsInternet, "false") <span class="customradio"></span> No </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-5 col-xl-4">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.IsParkingAvailable, new { @class = "form_label" }) <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Select 'Yes' if your property has Parking available"></i>
+                                            <div class="radiotwoprn">
+                                                <label class="customradiop">
+                                                    @Html.RadioButtonFor(m => m.IsParkingAvailable, "true", new { @checked = "checked" }) <span class="customradio"></span> Yes
+                                                </label>
+                                                <label class="customradiop">  @Html.RadioButtonFor(m => m.IsParkingAvailable, "false") <span class="customradio"></span> No </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row r6">
+                                    <div class="col-md-6 col-lg-5 col-xl-4">
+                                        <div class="form-group ">
+                                            @Html.LabelFor(m => m.IsTV, new { @class = "form_label" }) <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Select 'Yes' if your property includes TV"></i>
+                                            <div class="radiotwoprn">
+                                                <label class="customradiop">
+                                                    @Html.RadioButtonFor(m => m.IsTV, "true", new { @checked = "checked" }) <span class="customradio"></span> Yes
+                                                </label>
+                                                <label class="customradiop">   @Html.RadioButtonFor(m => m.IsTV, "false") <span class="customradio"></span> No </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-5 col-xl-4">
+                                        <div class="form-group ">
+                                            @Html.LabelFor(m => m.IsFirstAndLastMonthRentRequired, new { @class = "form_label" }) <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Select 'Yes' if first and last month's rent is required for your property'"></i>
+                                            <div class="radiotwoprn">
+                                                <label class="customradiop">
+                                                    @Html.RadioButtonFor(m => m.IsFirstAndLastMonthRentRequired, "true", new { @checked = "checked" }) <span class="customradio"></span> Yes
+                                                </label>
+                                                <label class="customradiop">  @Html.RadioButtonFor(m => m.IsFirstAndLastMonthRentRequired, "false") <span class="customradio"></span> No </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row r7">
+                                    <div class="col-md-6 col-lg-5 col-xl-4">
+                                        <div class="form-group ">
+                                            @Html.LabelFor(m => m.IsFurnished, new { @class = "form_label" }) <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Select 'Yes' if your property is furnished"></i>
+                                            <div class="radiotwoprn">
+                                                <label class="customradiop">
+                                                    @Html.RadioButtonFor(m => m.IsFurnished, "true", new { @checked = "checked" }) <span class="customradio"></span> Yes
+                                                </label>
+                                                <label class="customradiop"> @Html.RadioButtonFor(m => m.IsFurnished, "false") <span class="customradio"></span> No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 col-lg-5 col-xl-4">
+                                        <div class="form-group">
+                                            @Html.LabelFor(m => m.IsVegetarian, new { @class = "form_label" }) <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Select 'Yes' if this property is available only for vegetarian"></i>
+                                            <div class="radiotwoprn">
+                                                <label class="customradiop">
+                                                    @Html.RadioButtonFor(m => m.IsVegetarian, "true", new { @checked = "checked" }) <span class="customradio"></span> Yes
+                                                </label>
+                                                <label class="customradiop">
+                                                    @Html.RadioButtonFor(m => m.IsVegetarian, "false") <span class="customradio"></span> No
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row r8">
+                                    <div class="col-md-6 col-lg-5 col-xl-4">
+                                        <div class="form-group ">
+                                            @Html.LabelFor(m => m.IsSmokeFriendly, new { @class = "form_label" }) <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Select 'Yes' if this property is Smoke friendly"></i>
+                                            <div class="radiotwoprn">
+                                                <label class="customradiop">
+                                                    @Html.RadioButtonFor(m => m.IsSmokeFriendly, "true", new { @checked = "checked" }) <span class="customradio"></span> Yes
+                                                </label>
+                                                <label class="customradiop"> @Html.RadioButtonFor(m => m.IsSmokeFriendly, "false") <span class="customradio"></span> No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 col-lg-5 col-xl-4">
+                                        <div class="form-group ">
+                                            @Html.LabelFor(m => m.IsFeatured, new { @class = "form_label" }) <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Select 'Yes' if you want to mark this property as Featured"></i>
+                                            <div class="radiotwoprn">
+                                                <label class="customradiop">
+                                                    @Html.RadioButtonFor(m => m.IsFeatured, "true", new { @checked = "checked" }) <span class="customradio"></span> Yes
+                                                </label>
+                                                <label class="customradiop"> @Html.RadioButtonFor(m => m.IsFeatured, "false") <span class="customradio"></span> No</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row r9">
+                                <div class="col-md-6 col-lg-5 col-xl-4">
+                                    <div class="form-group ">
+                                        @Html.LabelFor(m => m.ApproxDistanceFromSchool, new { @class = "form_label" }) <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Enter approx distance between your property and school"></i>
+                                        @Html.TextBoxFor(m => m.ApproxDistanceFromSchool, new { @class = "form-control", @placeholder = "Approx Dist From School" })
+                                    </div>
+                                </div>
+                                <div class="col-md-6 col-lg-5 col-xl-4">
+                                    <div class="form-group ">
+                                        @Html.LabelFor(m => m.MajorIntersection, new { @class = "form_label" }) <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Enter major interaction around your property"></i>
+                                        @Html.TextBoxFor(m => m.MajorIntersection, new { @class = "form-control", @placeholder = "Major Intersection" })
+                                    </div>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                </div>
+
+                <div class="card crd03">
+                    <div class="card-header"> Property Photos </div>
+                    <div class="card-body">
+                        <article class="formdiv add-property-photos">
+                            @*@Html.Label("Upload An Image", new { @class = "form_label" }) <i class="fa fa-question-circle-o" data-toggle="tooltip" data-placement="top" aria-hidden="true" title="Upload Images of your property (Minimum Resolution: 770px x 407px)"></i>*@
+                            <div class="row" id="image-list">
+                                @*<div class="col-sm-6 col-md-4 col-lg-3 divbox">
+                                        <label class="customfileprn">
+                                            <input type="file" name="UploadPropertyImages" id="UploadPropertyImages" multiple="multiple" />
+                                            <span class="icontext">
+                                                <i class="iicon basement-renting-camera"></i>
+                                                <text>Browse</text>
+                                            </span>
+                                            <span id="spnMessage" style="color:red"></span>
+                                        </label>
+                                    </div>*@
+
+                                @if (Model.lstPropertyImages.Count > 0)
+                                {
+                                    @Html.HiddenFor(m => m.lstPropertyImages)
+                                    foreach (var item in Model.lstPropertyImages)
+                                    {
+                                        <div class="col-sm-6 col-md-4 col-lg-3 divbox edit_upload_images_preview">
+                                            <div class="image-preview">
+                                                <div class="darck_bg"><i class="propertyremoveEdit zmdi zmdi-close"></i></div>
+                                                <img src="@item.ImagePath" id="@item.Id">
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="offset-sm-3 col-sm-6  alert alert-danger" style="margin-top:2rem;text-align: center;margin-bottom: 4rem;">No Image found for this property</div>
+                                }
+                            </div>
+                        </article>
+
+                        <div class="waiting-loader-wrraper fill"><img src="~/Content/Images/customloader---white.gif" class="waiting-loader" /></div>
+                    </div>
+                </div>
+
+                <div class="form-group btn-prn">
+                    <button type="submit" class="btn btn-twoblue"><span class="iconprn"><i class="zmdi zmdi-check"></i><i class="zmdi zmdi-circle-o"></i></span> Submit </button>
+                </div>
+            </div>
+        </section>
+    }
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('.top-footer').addClass('border');
+
+        $("#lstNoOfBedrooms").val('0' + '@Model.NoOfBedroom');
+        $("#lstNoOfBathrooms").val('0' + '@Model.NoOfBathroom');
+        $("#lstProvince").val('@Model.ProvinceId');
+
+        setTimeout(function () {
+            $("#lstProvince").change();
+        }, 500);
+        setTimeout(function () {
+            $("#lstCity").val('@Model.CityId');
+        }, 1500);
+
+        @*if ('@FromActionName' != 'edit-property') {
+            $("#MonthlyRent").val('');
+        }*@
+        $("#MonthlyRent").keypress(function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                return false;
+            }
+        });
+
+        $("#Area").keypress(function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) /*&& String.fromCharCode(e.which) != '-'*/) {
+                return false;
+            }
+        });
+
+        $("#ApproxDistanceFromSchool").keypress(function (e) {
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+                return false;
+            }
+        });
+
+        $('#SubmitProperty').submit(function () {
+            var flag = 1;
+
+            if ($("#PropertyTitle").val() == '') {
+                $('#PropertyTitle').css('border-color', 'red');
+                flag = 0;
+            } else {
+                $('#PropertyTitle').css('border-color', '');
+            }
+
+            if ($("#MonthlyRent").val() == '') {
+                $('#MonthlyRent').css('border-color', 'red');
+                flag = 0;
+            } else {
+                $('#MonthlyRent').css('border-color', '');
+            }
+
+            if ($("#AvailableFromDate").val() == '') {
+                $('#AvailableFromDate').css('border-color', 'red');
+                flag = 0;
+            } else {
+                $('#AvailableFromDate').css('border-color', '');
+            }
+
+            if ($("#StreetAddress").val() == '') {
+                $('#StreetAddress').css('border-color', 'red');
+                flag = 0;
+            } else {
+                $('#StreetAddress').css('border-color', '');
+            }
+
+            if ($("#PostalCode").val() == '') {
+                $('#PostalCode').css('border-color', 'red');
+                flag = 0;
+            } else {
+                $('#PostalCode').css('border-color', '');
+            }
+
+            if ($("#lstNoOfBedrooms option:selected").index() == 0) {
+                $('#lstNoOfBedrooms').css('border-color', 'red');
+                flag = 0;
+            } else {
+                $('#lstNoOfBedrooms').css('border-color', '');
+            }
+
+            if ($("#lstNoOfBathrooms option:selected").index() == 0) {
+                $('#lstNoOfBathrooms').css('border-color', 'red');
+                flag = 0;
+            } else {
+                $('#lstNoOfBathrooms').css('border-color', '');
+            }
+
+            if ($("#lstProvince option:selected").index() == 0) {
+                $('#lstProvince').css('border-color', 'red');
+                flag = 0;
+            } else {
+                $('#lstProvince').css('border-color', '');
+            }
+
+            if ($("#lstCity option:selected").index() == 0) {
+                $('#lstCity').css('border-color', 'red');
+                flag = 0;
+            } else {
+                $('#lstCity').css('border-color', '');
+            }
+
+            if ($('#UploadPropertyImages').get(0).files.length != 0) {
+                var extension = $("#UploadPropertyImages").val().split('.').pop().toLowerCase();
+                var validFileExtensions = ['jpeg', 'jpg', 'png', 'gif'];
+
+                if ($.inArray(extension, validFileExtensions) == -1) {
+                    $("#spnMessage").text("Sorry!! Upload only jpg, jpeg, png, gif image").show();
+                    $("#UploadPropertyImages").replaceWith($("#UploadPropertyImages").val(''));
+                    $('.upload_images_preview').remove();
+                    flag = 0;
+                }
+                else
+                {
+                    $('#spnMessage').text('').hide();
+                }
+            }
+
+            if (flag == 0){
+                return false;
+            }
+            else {
+                return true;
+            }
+        });
+
+        $(document).on("click", ".propertyremove", function () {
+            var $element = $(this);
+            var ImageURL = $(this).closest('.upload_images_preview .image-preview').find('img').prop('src');
+            if (ImageURL !== undefined) {
+                $.confirm({
+                    title: 'Confirm!',
+                    content: 'Are you sure you want to delete?',
+                    buttons: {
+                        confirm: function () {
+                            $.ajax({
+                                url: "@Url.Action("removepreviewimage", "landlord")",
+                                type: "POST",
+                                data: { 'ImagePath': ImageURL },
+                                success: function (response) {
+                                    $($element).closest('.upload_images_preview').remove();
+                                },
+                                error: function () {
+                                    console.log("Error Occured!");
+                                }
+                            }); //end - ajax call
+                        },
+                        cancel: function () {
+                        }
+                    }
+                });//end of confirm
+            }
+        }); //end of remove image from preview
+
+        $(document).on("click", ".propertyremoveEdit", function () {
+            var $element = $(this);
+            var ImageURLId = $(this).closest('.edit_upload_images_preview .image-preview').find('img').prop('id');
+            if (ImageURLId !== undefined) {
+                $.confirm({
+                    title: 'Confirm!',
+                    content: 'Are you sure you want to delete?',
+                    buttons: {
+                        confirm: function () {
+                            $.ajax({
+                                url: "@Url.Action("removeImage", "admin")",
+                                type: "POST",
+                                data: { 'Id': ImageURLId },
+                                success: function () {
+                                    $($element).closest('.edit_upload_images_preview').remove();
+                                }
+                            });
+                        },
+                        cancel: function () {
+                            //$.alert('Canceled!');
+                        }
+                    }
+                });//end of confirm
+            }
+            //$(this).closest('.upload_images_preview').remove();
+        }); //end of remove image from preview
+
+        @*if ('@FromActionName' != 'edit-property') {
+            $('input:radio[value=true]').prop('checked', true); //To select all radio buttons
+        }*@
+
+        $("#lstProvince").change(function () {
+            $.ajax({
+                url: "@Url.Action("getcitylistbyprovinceid", "landlord")",
+                type: "POST",
+                data: { 'ProvinceId': $("#lstProvince").val() },
+                dataType: "json",
+                success: function (response) {
+                    if (response != false) {
+                        $("#lstCity").empty();
+                        $.each(response, function () {
+                            $("#lstCity").append($("<option></option>").val(this['Value']).html(this['Text']));
+                        });
+                    }
+                },
+                error: function () {
+                    console.log("Error Occured!");
+                }
+            }); //end - ajax call
+        }); //end - province change event
+
+        $("#UploadPropertyImages").change(function () {
+            // Checking whether FormData is available in browser
+            if (window.FormData !== undefined)
+            {
+                $(".waiting-loader-wrraper, .waiting-loader").show();
+
+                var fileUpload = $("#UploadPropertyImages").get(0);
+                var files = fileUpload.files;
+
+                if (files.length > 0) {
+                    RemoveAllTempImages();
+
+                    // Create FormData object
+                    var objFormData = new FormData();
+
+                    // Looping over all files and add it to FormData object
+                    for (var i = 0; i < files.length; i++) {
+                        objFormData.append(files[i].name, files[i]);
+                    }
+
+                    $.ajax({
+                        url: '@Url.Action("uploadpropertyimages", "admin")',
+                        type: "POST",
+                        contentType: false, // Not to set any content header
+                        processData: false, // Not to process data
+                        //contentType: "application/json; charset=utf-8",
+                        data: objFormData,
+                        dataType: 'json',
+                        success: function (result) {
+                            if (result != false && result != 'No files selected') {
+                                $('.upload_images_preview').remove();
+                                for (var i = 0; i < result.length; i++) {
+                                    $("#image-list").append("<div class='col-sm-6 col-md-4 col-lg-3  divbox upload_images_preview'><div class='image-preview'><div class='darck_bg'><i class='propertyremove zmdi zmdi-close'></i></div><img src='" + result[i] + "' /></div></div>");
+                                }
+                            }
+
+                            $(".waiting-loader-wrraper, .waiting-loader").hide();
+                        },
+                        error: function (err) {
+                            console.log(err.statusText);
+                        }
+                    }); //end of ajax
+                }
+                else { //when file is not selected
+                    //RemoveAllTempImages();
+                }
+            } else {
+                alert("Form Data is not supported.");
+            }
+        });// end of upload event
+
+    }); //end of doc ready
+
+    function RemoveAllTempImages() {
+        $.ajax({
+            url: '@Url.Action("ClearTempDataOfParticularUser", "landlord")',
+            type: "GET",
+            contentType: false, // Not to set any content header
+            processData: false, // Not to process data
+            success: function (result) {
+                return true;
+            },
+            error: function (result) {
+                console.log("Something went wrong, Please try again after sometime!");
+            }
+        }); //end of ajax
+    }
+</script>

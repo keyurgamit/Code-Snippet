@@ -1,0 +1,209 @@
+﻿@model EntityModel.DomainModel.ContactUs
+
+@{
+    ViewBag.Title = "MyAccount";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src='https://www.google.com/recaptcha/api.js'></script>
+
+<div class="contactus_pg">
+    <div class="breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-item active">Contact Us</div>
+        </div>
+    </div>
+    <article class="secton_middle_containt">
+        <div class="container">
+
+            <div class="sent-mail-status">
+                @if (ViewBag.SentMailStatus != null)
+                {
+                    @Html.Raw(ViewBag.SentMailStatus)
+                }
+            </div>
+
+            <div class="row">
+                <div class="col-lg-4 contactus_addreshinfoprn">
+                    <h5>Get In Touch With Us Easily</h5>
+                    <p class="psmall"> Should you have any questions or comments about our apartment rental service. you may contact us by filling out the email form.</p>
+                    <ul class="ul_callemail">
+                        <li>
+                            <h6>Give us a call</h6>
+                            <a href="tel:1-888-444-1234"><i class="zmdi zmdi-phone"></i> 1-888-444-1234</a>
+                        </li>
+                        <li>
+                            <h6>Send us a message</h6>
+                            <a href="mailto:info@basementrenting.com"><i class="zmdi zmdi-email"></i> info@basementrenting.com </a>
+                        </li>
+                    </ul>
+
+                    <div class="share42initsocial"></div>
+                    <script src="~/Content/share42/share42_socialicon.js"></script>
+                </div>
+                <div class="col-lg-8 contactus_formprn">
+                    <div class="card">
+                        <div class="card-header">
+                            Contact Us
+                        </div>
+                        <div class="card-body">
+                            <p class="psmall"> Required fields are marked with an asterisk(<required>*</required>).</p>
+                            @using (Html.BeginForm("submit-contact-us", "customer", FormMethod.Post, new { id = "SubmitContactUsForm" }))
+                            {
+                                <div class="formdiv">
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                @Html.Label("Name", new { @class = "frm-label" })<required>*</required>
+                                                @Html.TextBoxFor(x => x.Name, new { @id = "txtNameOfUser", @class = "form-control", @placeholder = "Enter Your Name" })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                @Html.Label("Email", new { @class = "frm-label" })<required>*</required>
+                                                @Html.TextBoxFor(x => x.EmailId, new { @id = "txtEmailId", @class = "form-control", @placeholder = "Enter Your Email" })
+                                                <span class="contactus-email-error" style="color:red;"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                @Html.Label("Phone Number", new { @class = "frm-label" })<required>*</required>
+                                                @Html.TextBoxFor(x => x.PhoneNumber, new { @maxlength = "10", @id = "txtPhoneNumber", @class = "form-control", @placeholder = "Enter Your Phone Number" })
+                                            </div>
+                                            <div class="form-group g-recaptcha-prn">
+                                                <required style="float: right;margin-right: 25px;">*</required>
+                                                @*Local & nyusoft*@
+                                                <div class="g-recaptcha" data-sitekey="6LeZc04UAAAAAJgM3zSrRr1J-M51cUkTqfDykkhs"></div>
+
+                                                @*Live*@
+                                                @*<div class="g-recaptcha" data-sitekey="6LddqWcUAAAAAOfnztl01O9LyKHbo7UmhgAnDdPE"></div>*@
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <div class="form-group">
+                                                @Html.Label("Message", new { @class = "frm-label" })<required>*</required>
+                                                @Html.TextAreaFor(x => x.MessageContent, new { @id = "txtMessage", @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-group btn-prn">
+                                        <button type="button" id="btnSubmitForm" class="btn btn-twoblue"><i class="fa fa-paper-plane-o" aria-hidden="true"></i> Submit</button>
+                                        <button type="reset" id="btnResetForm" class="btn btn-twogray" style="display:none;"><i class="fa fa-refresh" aria-hidden="true"></i> Reset</button>
+                                    </div>
+                                </div>
+                                <div class="waiting-loader-wrraper"><img src="~/Content/Images/customloader-blue.gif" class="waiting-loader" id="loader" /></div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </article>
+</div>
+
+
+
+<script>
+    $(function () {
+        $('.top-footer').addClass('border');
+    });
+
+    $(document).ready(function () {
+        $("#txtPhoneNumber").keypress(function (e) {
+            //if the letter is not digit then display error and don't type anything
+            if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57) /*&& String.fromCharCode(e.which) != '-'*/) {
+                //display error message
+                //$("#errmsg").html("Digits Only").show().fadeOut("slow");
+                return false;
+            }
+        });
+
+        $("#btnSubmitForm").click(function () {
+            $('#txtNameOfUser').css('border-color', '');
+            $('#txtEmailId').css('border-color', '');
+            $(".contactus-email-error").html('');
+            $('#txtPhoneNumber').css('border-color', '');
+            $('#txtMessage').css('border-color', '');
+            $('.g-recaptcha div div iframe').css('border', '')
+            var GoToAjax = true;
+
+            if ($("#txtNameOfUser").val() == "") {
+                $('#txtNameOfUser').css('border-color', 'red');
+                GoToAjax = false;
+            }
+
+            if ($("#txtEmailId").val() == "") {
+                $('#txtEmailId').css('border-color', 'red');
+                GoToAjax = false;
+            }
+
+            if (validateEmailId($("#txtEmailId").val()) == false) {
+                $("#txtEmailId").css("border-color", "red");
+
+                $(".contactus-email-error").show();
+                $(".contactus-email-error").html("Please enter valid Email.");
+                GoToAjax = false;
+            }
+
+            if ($("#txtPhoneNumber").val() == "") {
+                $('#txtPhoneNumber').css('border-color', 'red');
+                GoToAjax = false;
+            }
+
+            if ($("#txtMessage").val() == "") {
+                $('#txtMessage').css('border-color', 'red');
+                GoToAjax = false;
+            }
+
+            if (grecaptcha.getResponse().length == 0) {
+                $('.g-recaptcha div div iframe').css({ 'border': '1px solid red', 'border-radius': '0.25rem'});
+                GoToAjax = false;
+            }
+
+            if (GoToAjax == true) {
+                $("#SubmitContactUsForm").submit();
+
+                @*$("#loader,.waiting-loader-wrraper").show();
+                $.ajax({
+		            url: "@Url.Action("submit-contact-us", "customer")",
+		            type: "POST",
+                    data: { 'NameOfUser': $('#txtNameOfUser').val(), 'EmailId': $('#txtEmailId').val(), 'PhoneNumber': $('#txtPhoneNumber').val(), 'MessageContent': $('#txtMessage').val() },
+		            //async: false,
+		            //dataType: "json",
+		            //traditional: true,
+		            //contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        if (data == 'True') {
+                            $(".sent-mail-status").html('<div class="alert alert-success text-center">Email has been sent Successfully..!</div>');
+                            $("#btnResetForm").click();
+                        }
+                        else {
+                            $(".sent-mail-status").html('<div class="alert alert-danger text-center">Something went wrong, please try again after sometime!</div>');
+                        }
+                        $("#loader,.waiting-loader-wrraper").hide();
+                    },
+		            error: function () {
+			            console.log("Error Occured!");
+		            }
+	            });//end - ajax call*@
+            }
+        });
+
+    }); //end of doc ready
+
+    function validateEmailId(emailId) {
+        var x = emailId; //$("#txtEmailReg").val();
+        var atpos = x.indexOf("@@");
+        var dotpos = x.lastIndexOf(".");
+        if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= x.length) {
+            //alert("Invalid E-mail address");
+            return false;
+        }
+        else {
+            return true;
+        }
+    }
+</script>

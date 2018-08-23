@@ -1,0 +1,272 @@
+﻿@model EntityModel.DomainModel.Property
+
+@{
+    ViewBag.Title = "PropertyListing";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="property-details-page">
+    <div class="breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-item active">
+                <span class="property-id" data-id="@Model.Id">@Model.PropertyTitle</span>
+                <div class="changeslocationprn" data-toggleswitch="2" style="display:none;">
+                    <div class="goorcanceltogglediv">
+                        <div class="texboxp">
+                            <input placeholder="Enter City..." id="txtCityName" name="txtCityName" class="form-textbox">
+                        </div>
+                        <div class="btn_prn">
+                            <button class="btn-go btn btn-outline" id="SearchPropertiesByMatchingCityName">Go</button>
+                            <button class="btn-cancel btn btn-outline" data-toggleswitch="3"> Cancel</button>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-outline btn-change-location" data-toggleswitch="1"><i class="iicon basement-renting-location"></i> Change Location </button>
+            </div>
+        </div>
+    </div>
+    <section class="secton_middle_containt">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 div1">
+                    <div class="top_rows">
+                        <div class="share42initpropertydetails"></div>
+                        <script src="~/Content/share42/share42_property-details_socail_icon.js"></script>
+                        <div class="btn_group_prn">
+                            @if (Session["userid"] != null)
+                            {
+                                if (Model.IsFavourite == true)
+                                {
+                                    <button class="toggle-favourite-button btn btn-danger">
+                                        <i class="iicon basement-renting-whislist"></i>  @Html.Label("Favourite", new { @Id = "IsFavourite" })
+                                    </button>
+                                }
+                                else
+                                {
+                                    <button class="toggle-favourite-button btn  btn-outline-danger">
+                                        <i class="iicon basement-renting-whislist"></i>  @Html.Label("Favourite", new { @Id = "IsFavourite" })
+                                    </button>
+                                }
+                            }
+
+                            @if (Model.IsFeatured == true)
+                            {
+                                <button class="btn btn-flategreen">
+                                    <i class="iicon basement-renting-star"></i>
+                                    @Html.Label(Model.IsFeatured == true ? "Featured" : "")
+                                </button>
+                            }
+
+                            @Html.HiddenFor(m => m.OwnerEmailId)
+                            @*<button class="btn btn-tworedorange" id="OwnerPhoneNumber"><i class="iicon basement-renting-call"></i>@Html.DisplayTextFor(m => m.OwnerPhoneNumber)</button>*@
+                            <a class="btn btn-tworedorange" id="OwnerPhoneNumber" href=tel:@Html.DisplayTextFor(m => m.OwnerPhoneNumber)"><i class="iicon basement-renting-call"></i>  @Html.DisplayTextFor(m => m.OwnerPhoneNumber)</a>
+                        </div>
+                    </div>
+                    <div class="second_rows">
+                        <h2 id="PropertyTitle"> @Html.DisplayTextFor(m => m.PropertyTitle)</h2>
+                        <h6 id="StreetAddress"><i class="iicon basement-renting-location"></i> @Html.DisplayTextFor(m => m.StreetAddress)</h6>
+                        <h4 id="MonthlyRent"> $ @Html.DisplayTextFor(m => m.MonthlyRent) <sup> /per Month</sup></h4>
+                    </div>
+
+                    @if (Model.lstPropertyImages.Count > 0)
+                    {
+                        <article class="pd_galleryimage default-image">
+                            <img src="@Model.lstPropertyImages.FirstOrDefault().ImagePath" class="max_images" id="DefaultPropertyImage" />
+                        </article>
+                    }
+
+                    <article class="property-images-slider pd_galleryimage_slider">
+                        @if (Model.lstPropertyImages.Count > 0)
+                        {
+                            foreach (var item in Model.lstPropertyImages)
+                            {<div>
+                                    <div class="gallery_thumb_box"> <img src="@item.ImagePath" id="@item.Id" class="min_thumbimg property-extra-images-@item.Id " onclick="showOtherImagePreview('@item.ImagePath')" /></div>
+                                </div>
+                            }
+                        }
+                    </article>
+                    <article class="pd_key-property-details">
+                        <h3 class="titleunderline">Key Property Details</h3>
+                        <ul class="ul01">
+
+                            <li>@Html.LabelFor(m => m.NoOfBedroom) <colon>:</colon></li>
+                            <li class="livalue">@Html.DisplayTextFor(m => m.NoOfBedroom)</li>
+
+                            <li>@Html.LabelFor(m => m.NoOfBathroom)<colon>:</colon></li>
+                            <li class="livalue">@Html.DisplayTextFor(m => m.NoOfBathroom)</li>
+
+
+                            <li> @Html.Label("Approx Area")<colon>:</colon></li>
+                            <li class="livalue"> @Html.DisplayTextFor(m => m.Area)</li>
+
+
+                            <li> @Html.LabelFor(m => m.IsSeparateEntrance)<colon>:</colon></li>
+                            <li class="livalue"> @Html.Label(Model.IsSeparateEntrance == true ? "Yes" : "No")</li>
+
+
+                            <li> @Html.LabelFor(m => m.IsSeparateLaundry)<colon>:</colon></li>
+                            <li class="livalue"> @Html.Label(Model.IsSeparateLaundry == true ? "Yes" : "No")</li>
+
+
+                            <li> @Html.LabelFor(m => m.IsInternet)<colon>:</colon></li>
+                            <li class="livalue"> @Html.Label(Model.IsInternet == true ? "Yes" : "No")</li>
+
+
+                            <li> @Html.LabelFor(m => m.IsTV)<colon>:</colon>
+                            <li class="livalue"> @Html.Label(Model.IsTV == true ? "Yes" : "No")</li>
+
+
+                            <li> @Html.LabelFor(m => m.IsFurnished)<colon>:</colon></li>
+                            <li class="livalue"> @Html.Label(Model.IsFurnished == true ? "Yes" : "No")</li>
+
+
+                            <li> @Html.LabelFor(m => m.MajorIntersection)<colon>:</colon></li>
+                            <li class="livalue"> @Html.DisplayTextFor(m => m.MajorIntersection)</li>
+
+                            <li> @Html.LabelFor(m => m.AvailableFromDate)<colon>:</colon></li>
+                            <li class="livalue"> @Html.DisplayTextFor(m => m.AvailableFromDate)</li>
+                        </ul>
+
+
+                        <ul class="ul02">
+                            <li> @Html.LabelFor(m => m.IsSmokeFriendly)<colon>:</colon></li>
+                            <li class="livalue"> @Html.Label(Model.IsSmokeFriendly == true ? "Yes" : "No")</li>
+
+
+                            <li> @Html.LabelFor(m => m.IsPetFriendly)<colon>:</colon></li>
+                            <li class="livalue"> @Html.Label(Model.IsPetFriendly == true ? "Yes" : "No")</li>
+
+
+                            <li> @Html.LabelFor(m => m.IsWalkOutOrNot)<colon>:</colon></li>
+                            <li class="livalue"> @Html.Label(Model.IsWalkOutOrNot == true ? "Yes" : "No")</li>
+
+
+                            <li> @Html.LabelFor(m => m.IsParkingAvailable)<colon>:</colon></li>
+                            <li class="livalue"> @Html.Label(Model.IsParkingAvailable == true ? "Yes" : "No")</li>
+
+
+                            <li> @Html.LabelFor(m => m.IsFirstAndLastMonthRentRequired)<colon>:</colon></li>
+                            <li class="livalue"> @Html.Label(Model.IsFirstAndLastMonthRentRequired == true ? "Yes" : "No")</li>
+
+
+                            <li>  @Html.LabelFor(m => m.IsVegetarian)<colon>:</colon></li>
+                            <li class="livalue">  @Html.Label(Model.IsVegetarian == true ? "Yes" : "No")</li>
+
+
+                            <li> @Html.Label("Approx Dist From School")<colon>:</colon></li>
+                            <li class="livalue"> @Html.DisplayTextFor(m => m.ApproxDistanceFromSchool)</li>
+
+
+                            <li>  @Html.Label("City")<colon>:</colon></li>
+                            <li class="livalue">  @Html.DisplayTextFor(m => m.CityName)</li>
+                        </ul>
+                    </article>
+
+                    <article class="pd_property-information">
+                        <h4>Property Information</h4>
+                        @*@Html.DisplayTextFor(x => x.PropertyInformation)*@
+                        @Html.Raw(Model.PropertyInformation)
+                    </article>
+
+                </div>
+                <div class="col-lg-4 div2">
+                    @Html.Partial("_EmailPropertyManager")
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section_similar_property_slider">
+        <div class="container">
+            @Html.Action("GetSimilarProperties", "property", new { NoOfBedrooms = Model.NoOfBedroom, NoOfBathrooms = Model.NoOfBathroom })
+        </div>
+    </section>
+</div>
+
+<link href="~/content/slick-slider/slick.css" rel="stylesheet" />
+<link href="~/content/slick-slider/slick-theme.css" rel="stylesheet" />
+<script src="~/content/slick-slider/slick.min.js"></script>
+
+<script type="text/javascript">
+    $(document).on('ready', function () {
+        $(".property-images-slider .slick-slide");
+
+        $(".property-images-slider").slick({
+            dots: false,
+            autoplay: false,
+            autoplaySpeed: 3000,
+            infinite: true,
+            slidesToShow: 5,
+            slidesToScroll: 5,
+            arrows: true,
+            responsive: [
+                { breakpoint: 1024, settings: { slidesToShow: 3 } },
+                { breakpoint: 769, settings: { slidesToShow: 2 } },
+                { breakpoint: 600, settings: { slidesToShow: 1, dots: false } },
+                { breakpoint: 300, settings: "unslick" }
+            ]
+        });
+
+        $(".property-images-slider .slick-slide").click(function(e) {
+            $(".property-images-slider .slick-slide").removeClass('slick-current');
+            $(this).addClass('slick-current');
+        });
+
+        $(".toggle-favourite-button").click(function () {
+            $.ajax({
+                url: "@Url.Action("ToggleFavouritePropertyByUser", "property")",
+                type: "POST",
+                data: { 'PropertyId': @Model.Id, 'ToggleFavourite' : '@Model.IsFavourite' },
+                success: function (data) {
+                    if (data == true) {
+                        @Model.IsFavourite = true;
+                        //$("#IsFavourite").text("Favourite");
+                        $(".toggle-favourite-button").addClass('btn-danger').removeClass('btn-outline-danger');
+
+                        $.alert({
+                            title: 'Added to Favourite!',
+                            content: 'Property has been added in your favourite list!',
+                        });
+                    }
+                    else if (data == false) {
+                        @Model.IsFavourite = false;
+                        //$("#IsFavourite").text("Not Favourite");
+                        $(".toggle-favourite-button").removeClass('btn-danger').addClass('btn-outline-danger');
+
+                        $.alert({
+                            title: 'Removed from Favourite!',
+                            content: 'Property has been removed from your favourite list!',
+                        });
+                    }
+                    else {
+                        @Model.IsFavourite = false;
+                        //$("#IsFavourite").text("Not Favourite");
+                        $(".toggle-favourite-button").removeClass('btn-danger').addClass('btn-outline-danger');
+
+                        $.alert({
+                            title: 'Removed from Favourite!',
+                            content: 'Property has been removed from your favourite list!',
+                        });
+                    }
+                },
+                error: function () {
+                    console.log("Error Occured!");
+                }
+            });//end - ajax call
+        });
+
+        /*-------------------------------------*/
+        $('[data-toggleswitch="1"]').click(function(e) {
+            $('[data-toggleswitch="2"]').show();
+            $('[data-toggleswitch="1"]').hide();
+        });
+        $('[data-toggleswitch="3"]').click(function(e) {
+            $('[data-toggleswitch="2"]').hide();
+            $('[data-toggleswitch="1"]').show();
+        });
+        /*-----------------------------------------*/
+    }); //end of doc ready
+
+    function showOtherImagePreview(imageurl) {
+        $("#DefaultPropertyImage").prop("src", imageurl);
+    }
+</script>

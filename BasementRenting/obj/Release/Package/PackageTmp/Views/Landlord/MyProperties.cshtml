@@ -1,0 +1,36 @@
+﻿@model List<EntityModel.DomainModel.Property>
+
+@{
+    ViewBag.Title = "Property";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="landlord_myproperties_pg">
+    @*@using (Html.BeginForm("", "", FormMethod.Post, new { id = "MyPropertyListing" }))
+        {*@
+    <div class="breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-item active">
+                <span>My Property</span>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.Any())
+    {
+        <section class="secton_middle_containt">
+            <div class="container">
+                <div class="landlord_MP my-property-listing listing_box_wraper">
+                    @Html.Partial("~/views/landlord/shared/_propertybox.cshtml", Model)
+                </div>
+            </div>
+        </section>
+    }
+    else
+    {
+         <div class="offset-md-3 col-md-6 alert alert-danger" style="margin-top: 4rem;margin-bottom: 4rem;text-align:center;">No Property Found</div>
+    }
+
+    @*}*@
+    <script>$(function (e) { $('.top-footer').addClass('border'); });</script>
+</div>

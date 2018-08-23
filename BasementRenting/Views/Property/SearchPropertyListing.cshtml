@@ -1,0 +1,240 @@
+﻿@model List<EntityModel.DomainModel.Property>
+
+@using EntityModel.DomainModel
+
+@{
+    int TotalPages = 0;
+
+    SearchProperty SearchPropertyModel = null;
+    if (ViewBag.objSearchProperty != null)
+    {
+        SearchPropertyModel = (SearchProperty)ViewBag.objSearchProperty;
+    }
+}
+
+<div class="property-listing-page propertlistingpg">
+    <div class="breadcrumb">
+        <div class="container">
+            <div class="breadcrumb-item active">
+                <span>Search result for : @SearchPropertyModel.Keyword</span>
+            </div>
+        </div>
+    </div>
+
+    <section class="secton_middle_containt">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-md-12 col-lg-3 search-rentals-sidebar search-rentals">
+                    <div class="card">
+                        <div class="card-header">
+                            Search Rentals
+                        </div>
+                        <div class="card-body">
+                            @Html.Action("searchpropertyform", "property", SearchPropertyModel)
+                            <input type="hidden" id="hiddenPageIndex" name="hiddenPageIndex" value="@ViewBag.HiddenPageIndex" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12 col-lg-9 product-wrapper-containt">
+                    @using (Html.BeginForm("get-searched-properties", "property", FormMethod.Post, new { id = "ProperyListingPage", objSearchProperty = SearchPropertyModel }))
+                    {
+                        @*<input type="hidden" id="hiddenCityId" name="hiddenCityId" value="@ViewBag.CityId" />*@
+                        @*<input type="hidden" id="hiddenCityName" name="hiddenCityName" value="@ViewBag.CityName" />*@
+                        @*<input type="hidden" id="hiddenSortBy" name="hiddenSortBy" value="@ViewBag.sortby" />*@
+                        @*<input type="hidden" id="hiddenPageIndex" name="hiddenPageIndex" value="@ViewBag.HiddenPageIndex" />*@
+
+                        @*<input type="hidden" id="hiddenKeyword" name="hiddenKeyword" value="@SearchPropertyModel.Keyword" />
+                        <input type="hidden" id="hiddenFromPrice" name="hiddenFromPrice" value="@SearchPropertyModel.FromPrice" />
+                        <input type="hidden" id="hiddenToPrice" name="hiddenToPrice" value="@SearchPropertyModel.ToPrice" />
+                        <input type="hidden" id="hiddenAvailableFromDate" name="hiddenAvailableFromDate" value="@SearchPropertyModel.AvailableFromDate" />
+                        <input type="hidden" id="hiddenNoOfBedRooms" name="hiddenNoOfBedRooms" value="@SearchPropertyModel.NoOfBedRooms" />
+                        <input type="hidden" id="hiddenNoOfBathRooms" name="hiddenNoOfBathRooms" value="@SearchPropertyModel.NoOfBathRooms" />
+                        <input type="hidden" id="hiddenDistanceFromSchool" name="hiddenDistanceFromSchool" value="@SearchPropertyModel.DistanceFromSchool" />
+                        <input type="hidden" id="hiddenSeparateEntrance" name="hiddenSeparateEntrance" value="@SearchPropertyModel.SeparateEntrance" />*@
+
+                        @*<input type="hidden" id="hidden Keyword" name="hidden Keyword" value="@ViewBag.Hidden Keyword" />
+                        <input type="hidden" id="hidden Keyword" name="hidden Keyword" value="@ViewBag.Hidden Keyword" />
+                        <input type="hidden" id="hiddenAvailableFromDate" name="hiddenAvailableFromDate" value="@ViewBag.HiddenAvailableFromDate" />*@
+
+                        if (Model.Count > 0)
+                        {
+                            TotalPages = Model.FirstOrDefault().TotalPages;
+
+                            <div class="recordheader_result">
+                                <div class="showrantal_prn">
+                                    <span>Showing Rentals @Model.FirstOrDefault().ROWNUMBER - @Model.LastOrDefault().ROWNUMBER of @Model.FirstOrDefault().TotalRecords Result(s)</span>
+                                </div>
+                                @*@if (ViewBag.SortingOptions != null)
+                                {
+                                    <ul class="sort_prn">
+                                        <li><b> Sort By:</b></li>
+                                        <li> @Html.DropDownList("PropertySorting", new SelectList(ViewBag.SortingOptions, "Value", "Text"), new { @class = "form-control", @id = "PropertySorting" }) </li>
+                                    </ul>
+                                }*@
+                            </div>
+                            <div class="property-listing  listing_box_wraper">
+                                @Html.Partial("_PropertyBox", Model)
+                            </div>
+
+                            if (TotalPages > 1)
+                            {
+                                <div>
+                                    <ul class="pagination">
+                                        <li class="page-item previous"><a class="page-link"><i class="zmdi zmdi-chevron-left"></i><span class="go-to-page"></span></a></li>
+                                        @for (int i = 1; i <= TotalPages; i++)
+                                        {
+                                            <li class="page-item"><a class="page-link go-to-page pglink_@i" href="javascript:void(0)"><span>@i</span></a></li>
+                                        }
+                                        <li class="page-item next"><a class="page-link"><i class="zmdi zmdi-chevron-right"></i></a></li>
+                                    </ul>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="col-sm-12">
+                                <div class="alert alert-info">
+                                    <span> No Rentals Found </span>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#NoOfBedRooms").val('0' + '@SearchPropertyModel.NoOfBedRooms');
+        $("#NoOfBathRooms").val('0' + '@SearchPropertyModel.NoOfBathRooms');
+
+        $('.top-footer').addClass('border');
+        $('.page-item  .page-link').removeClass('active');
+        $('.pglink_' + $("#hiddenPageIndex").val()).addClass('active');
+        /*----------------------------*/
+        var CurrentPageIndex02 = $("#hiddenPageIndex").val(); //parseInt(GetQueryStringValue('pageindex'));
+        if (CurrentPageIndex02 >= 2) {
+            $(".page-item.previous").removeClass('disable');
+        }
+        else {
+            $(".page-item.previous").addClass('disable');
+        }
+        var CurrentPageIndex02 = $("#hiddenPageIndex").val(); //parseInt(GetQueryStringValue('pageindex'));
+        if (CurrentPageIndex02 != (@TotalPages)){
+            $(".page-item.next").removeClass('disable');
+        }
+        else {
+            $(".page-item.next").addClass('disable');
+        }
+        /*----------------------------*/
+
+        //start - to blank the value if it's zero
+        if ($("#FromPrice").val() == 0) {
+            $("#FromPrice").val('');
+        }
+        if ($("#ToPrice").val() == 0) {
+            $("#ToPrice").val('');
+        }
+        if ($("#DistanceFromSchool").val() == 0) {
+            $("#DistanceFromSchool").val('');
+        }
+        //end - to blank the value if it's zero
+
+        //$("#PropertySorting").val(GetQueryStringValue('sortby'));
+        //var PageIndex = GetQueryStringValue('pageindex');
+
+        //$("#PropertySorting").change(function () {
+        //    $("#hiddenSortBy").val($("#PropertySorting").val());
+        //    $("#hiddenPageIndex").val(1);
+
+        //    $("#ProperyListingPage").submit();
+        //});
+
+        //start - go to specific page index
+        $(".go-to-page").click(function () {
+            var pageindex = $(this).children('span').html();
+
+            $("#hiddenPageIndex").val(pageindex);
+
+            $('<input>').attr({
+                type: 'hidden',
+                id: 'hiddenPageIndex',
+                name: 'hiddenPageIndex',
+                value: $("#hiddenPageIndex").val()
+            }).appendTo('#SearchForm');
+
+            $("#SearchForm").submit();
+        });
+        //end - go to specific page index
+
+        //start - go to previous
+        $(".page-item.previous").click(function () {
+            var CurrentPageIndex = $("#hiddenPageIndex").val(); //parseInt(GetQueryStringValue('pageindex'));
+            if (CurrentPageIndex >= 2) {
+                $(".page-item.previous").removeClass('disable');
+                $("#hiddenPageIndex").val(parseInt(CurrentPageIndex) - 1);
+
+                $('<input>').attr({
+                    type: 'hidden',
+                    id: 'hiddenPageIndex',
+                    name: 'hiddenPageIndex',
+                    value: $("#hiddenPageIndex").val()
+                }).appendTo('#SearchForm');
+
+                $("#SearchForm").submit();
+            }
+            else {
+                $(".page-item.previous").addClass('disable');
+            }
+        });
+        //end - go to previous
+
+        //start - go to next
+        $(".page-item.next").click(function () {
+            var CurrentPageIndex = $("#hiddenPageIndex").val(); //parseInt(GetQueryStringValue('pageindex'));
+            if (CurrentPageIndex != (@TotalPages))
+            {
+                $(".page-item.next").removeClass('disable');
+                $("#hiddenPageIndex").val(parseInt(CurrentPageIndex) + 1);
+
+                $('<input>').attr({
+                    type: 'hidden',
+                    id: 'hiddenPageIndex',
+                    name: 'hiddenPageIndex',
+                    value: $("#hiddenPageIndex").val()
+                }).appendTo('#SearchForm');
+
+                $("#SearchForm").submit();
+            }
+            else {
+                $(".page-item.next").addClass('disable');
+            }
+        });
+        //end - go to next
+
+        /*-------------------------------------*/
+        $('[data-toggleswitch="1"]').click(function(e) {
+            $('[data-toggleswitch="2"]').show();
+            $('[data-toggleswitch="1"]').hide();
+        });
+        $('[data-toggleswitch="3"]').click(function(e) {
+            $('[data-toggleswitch="2"]').hide();
+            $('[data-toggleswitch="1"]').show();
+        });
+        /*-----------------------------------------*/
+    }); //end of doc ready
+
+    function GetQueryStringValue(param) {
+        var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for (var i = 0; i < url.length; i++) {
+            var urlparam = url[i].split('=');
+            if (urlparam[0] == param) {
+                return urlparam[1];
+            }
+        }
+    }
+</script>

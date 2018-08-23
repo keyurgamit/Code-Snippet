@@ -1,0 +1,90 @@
+﻿@model List<EntityModel.DomainModel.Property>
+
+@if (Model.Count > 0)
+{
+    foreach (var item in Model)
+    {
+        <div class="divslideruse">
+            <div class="property-item" data-productid="@item.Id">
+                <span class='pr_remove delete-property' data-product-id="@item.Id">X</span>
+                <div class="property-picture">
+                    <label class="btn btn-price"> $ @item.MonthlyRent <sup>/per Month</sup> </label>
+                    @if (item.IsFeatured == true)
+                    {
+                        <div class="featured_prn"> <span>Featured</span></div>
+                    }
+                    <a class="picture_link" title="@item.PropertyTitle">
+                        <img class="picture_thumbs" alt="@item.PropertyTitle" src="@item.ImagePath" title="@item.PropertyTitle" />
+                    </a>
+                </div>
+                <div class="property_desc">
+                    <div class="property_title"> @item.PropertyTitle</div>
+                    <div class="property_addresh"><i class="iicon basement-renting-location"></i> @item.StreetAddress</div>
+                    <div class="property_vdetail">
+                        <a href="@Url.Action("edit-property", "admin", new { propertyid = item.Id })"><i class="zmdi zmdi-edit"></i> Edit Property</a>
+
+                        @if (item.IsApproved == false)
+                        {
+                            <span class="approve-property btn btn-flategreen" data-propertyid="@item.Id"><i class="fa fa-check-square-o" aria-hidden="true"></i> Approve</span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <script>
+        $(document).ready(function () {
+            $(".delete-property").click(function () {
+                var $element = $(this);
+                var PropertyId = $(this).attr("data-product-id");
+
+                if (PropertyId !== undefined) {
+                    $.confirm({
+                        title: 'Confirm!',
+                        content: 'Are you sure you want to delete?',
+                        buttons: {
+                            confirm: function () {
+                                $.ajax({
+                                    url: "@Url.Action("delete-property", "admin")",
+                                    type: "POST",
+                                    data: { 'PropertyId': PropertyId },
+                                    success: function (response) {
+                                        if (response == 'True') {
+                                            $($element).closest('.divslideruse').remove();
+                                        }
+                                    },
+                                    error: function () {
+                                        console.log("Error Occured!");
+                                    }
+                                }); //end - ajax call
+                            },
+                            cancel: function () {
+                            }
+                        }
+                    });//end of confirm
+                }
+            }); //end of remove propery click
+
+            $(".approve-property").click(function () {
+                var $element = $(this);
+                var PropertyId = $(this).attr("data-propertyid");
+
+                $.ajax({
+                    url: "@Url.Action("approve-property", "admin")",
+                    type: "POST",
+                    data: { 'PropertyId': PropertyId },
+                    success: function (response) {
+                        if (response == 'True') {
+                            $($element).closest('.divslideruse').remove();
+                        }
+                    },
+                    error: function () {
+                        console.log("Error Occured!");
+                    }
+                }); //end - ajax call
+            });//end of approve property
+
+        }); //end of doc ready
+    </script>
+}
