@@ -1,0 +1,164 @@
+var SettingService = EngineContext.Current.Resolve<ISettingService>();
+
+var CurrentStoreId = Nop.Core.Infrastructure.EngineContext.Current.Resolve<Nop.Core.IStoreContext>().CurrentStore.Id;
+
+var pluginDescriptor = _pluginFinder.GetPluginDescriptorBySystemName(systemName, LoadPluginsMode.All);
+
+var _pluginFinder = EngineContext.Current.Resolve<IPluginFinder>();
+
+Nop.Services.Logging.ILogger _logger = EngineContext.Current.Resolve<Nop.Services.Logging.ILogger>();
+_logger.InsertLog(Nop.Core.Domain.Logging.LogLevel.Information, "Store Id : " + currentsoteid + ", testimonialpluginmodel : " + testimonialpluginmodel);
+
+----------------------------------------------------------------------------------------------
+
+var CurrentStoreURL = EngineContext.Current.Resolve<IStoreContext>().CurrentStore.Url;
+
+----------------------------------------------------------------------------------------------
+Increase DisplayOrder
+
+var datamodel = _TestimonialRepository.Table;
+if (model != null)
+{
+	if (model.DisplayOrder == 0)
+	{
+		if (datamodel.Count() > 0)
+		{
+			int maxdisplayorder = _TestimonialRepository.Table.ToList().Max(x => x.DisplayOrder);
+			model.DisplayOrder = maxdisplayorder + 1;
+		}
+		else
+		{
+			model.DisplayOrder = 1;
+		}
+	}
+}
+else
+{
+	model.DisplayOrder = 1;
+}
+----------------------------------------------------------------------------------------------
+Get All Stores
+
+var storeModels = _storeService.GetAllStores()
+               .Select(x => x.ToModel())
+               .ToList();
+List<SelectListItem> lstStore = new List<SelectListItem>();
+foreach (var item in storeModels)
+{
+	SelectListItem obj = new SelectListItem();
+	obj.Text = item.Name;
+	obj.Value = item.Id.ToString();
+	lstStore.Add(obj);
+}
+ViewBag.storeData = lstStore;
+
+----------------------------------------------------------------------------------------------
+Check URL Valid or Not
+
+Uri uriResult;
+bool result = Uri.TryCreate(uriName, UriKind.Absolute, out uriResult) 
+    && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+	
+----------------------------------------------------------------------------------------------
+Session using Javascript
+
+http://stackoverflow.com/questions/2257631/how-to-create-a-session-using-javascript
+
+http://stackoverflow.com/questions/18076013/setting-session-variable-using-javascript
+
+----------------------------------------------------------------------------------------------
+AJAX CAll
+
+$('#btnSaveZipCodeSettings').click(function () {
+	$.ajax({
+		url: "@Url.Action("SaveZipCodeSettings", "ZipCode")",
+		type: "POST",
+		data: JSON.stringify({ 'MinimumAmountCOD': $('#txtMinAmountForCOD').val() }),
+		async: false,
+		dataType: "json",
+		traditional: true,
+		contentType: "application/json; charset=utf-8",
+		success: function (data) {
+			if (data == "true") {
+			} else {
+				alert("Error Occurs!");
+			}
+		},
+		error: function () {
+			console.log("Error Occured!");
+		}
+	});//end - ajax call
+});//end - button click
+
+----------------------------------------------------------------------------------------------
+Passing Model To Action
+
+var ModelData = '@Html.Raw(Json.Encode(Model.clsProductReviewOverviewModel))';
+var objProductReviewOverviewModel = JsonConvert.DeserializeObject<ProductReviewOverviewModel>(clsProductReviewOverviewModelData);
+
+----------------------------------------------------------------------------------------------
+Get Current ThemeName
+
+EngineContext.Current.Resolve<IThemeContext>().WorkingThemeName
+
+----------------------------------------------------------------------------------------------
+SQL Query
+
+public virtual DataTable SqlQuery(string sqlQuery)
+{
+	try
+	{
+		string sqlConnectionString = System.IO.File.ReadAllText(System.Web.HttpContext.Current.Server.MapPath("~/App_Data/Settings.txt"), Encoding.UTF8).Split(new string[] { "DataConnectionString: " }, StringSplitOptions.None)[1].TrimEnd();
+		SqlConnection con = new SqlConnection(sqlConnectionString);
+		SqlCommand cmd = new SqlCommand(sqlQuery, con);
+		SqlDataAdapter da = new SqlDataAdapter(cmd);
+		DataTable dt = new DataTable();
+		da.Fill(dt);
+		
+		return dt;
+	}
+	catch (Exception ex)
+	{
+		return null;
+	}
+}
+
+----------------------------------------------------------------------------------------------
+Bind Json Data to DropdownList
+
+$("#ddCategory").find('option').remove();
+$(data).each(function (index, item) {
+	$('#ddCategory').append($('<option></option>').val(item.Value).html(item.Text));
+});
+
+----------------------------------------------------------------------------------------------
+Convert List to Comma seperated String
+string.Join(",", tblProductCategoryProductIds.ToList());
+
+Convert Comma seperated String to List
+MotherboardIds.Split(',').Select(int.Parse).ToList();
+
+----------------------------------------------------------------------------------------------
+Pagination using Javascript
+
+https://stackoverflow.com/questions/31920360/dynamic-pagination-in-jquery
+
+----------------------------------------------------------------------------------------------
+Checkbox value using jquery
+
+$(".underby:checked").map(function () {return this.value;}).get().join(",")
+
+----------------------------------------------------------------------------------------------
+Get QueryString Value
+
+function GetQueryStringValue(param) {
+	var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+	for (var i = 0; i < url.length; i++) {
+		var urlparam = url[i].split('=');
+		if (urlparam[0] == param) {
+			return urlparam[1];
+		}
+	}
+}
+
+----------------------------------------------------------------------------------------------
